@@ -1,0 +1,34 @@
+# Colang 1.0 topical (dialog) rails. No "main" model here on purpose — the host
+# passes a GeminiRailsLLM instance (implementing NeMo's LLMModel protocol directly)
+# over the existing Gemini client via LLMRails(config, llm=...).
+# Intent classification is embeddings-only (local FastEmbed MiniLM), so no LLM
+# call happens for scope decisions.
+colang_version: "1.0"
+
+models:
+  - type: embeddings
+    engine: FastEmbed
+    # Multilingual (XLM-R distill, ~50 languages incl. Spanish/Armenian/Japanese)
+    # so non-English student turns aren't wrongly refused. LACCD is heavily
+    # Spanish-speaking; an English-only model (all-MiniLM-L6-v2) refused them.
+    # Smallest multilingual model FastEmbed supports (~0.22 GB); no query/passage
+    # prefix needed (unlike e5). Threshold below is re-tuned for this model.
+    model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+
+rails:
+  dialog:
+    user_messages:
+      # Match user messages to canonical intents purely by embedding similarity.
+      embeddings_only: True
+      # Tuned for the multilingual model above against
+      # tests/guardrails_eval/dataset.jsonl (the 104 advertised index.html
+      # questions rendered per-campus + ~44 off-scope adversarials). At 0.42:
+      # in-scope recall 1.00 (all Spanish/Armenian/Japanese/Chinese/French rows
+      # included), out-of-scope refusal 0.955. 0.42 is the top of the
+      # recall=1.0 plateau (it extends down to ~0.30); the recall cliff begins
+      # at 0.43 where a non-English turn starts to get refused. Re-tune via
+      # `python scripts/eval_guardrails.py --threshold X`.
+      embeddings_only_similarity_threshold: 0.42
+      # Anything that doesn't clear the threshold becomes this intent, which the
+      # refuse-fallback flow catches. This is what closes the "answer anything" hole.
+      embeddings_only_fallback_intent: "out of scope"

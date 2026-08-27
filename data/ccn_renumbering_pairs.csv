@@ -1,0 +1,35 @@
+# California Common Course Numbering (CCN) renumbering pairs.
+#
+# Source of truth for `scripts/seed_ccn_renumbering.py`. Each row creates a
+# (:Course {from_subject, from_number, campus_code})-[:RENUMBERED_TO]->
+# (:Course {to_subject, to_number, campus_code}) edge in Neo4j; both nodes
+# are MERGEd as needed.
+#
+# The walker in `neo4j_service.resolve_course_code` already handles the
+# C-form alternation heuristic on its own (CHEM 211 ↔ CHEM C211 in the
+# same subject). This file is for the cases that heuristic can't reach:
+#   - cross-subject renumberings (e.g. MATH 227 → STAT C1000)
+#   - subject *and* number changes (e.g. PSYCH 1 → PSYC C1000)
+#   - non-obvious district renamings (CIS 101 ↔ CS 101)
+#
+# **Verify each row against the CCC Common Course Numbering Project catalog
+#   before adding** — don't infer direction or effective term. The CCC
+#   project's official course list is at:
+#   https://www.cccco.edu/About-Us/Chancellors-Office/Divisions/Educational-Services-and-Support/common-course-numbering-project
+#
+# Columns:
+#   from_subject   Original subject code (e.g. MATH)
+#   from_number    Original course number (e.g. 227)
+#   to_subject     New subject code (e.g. STAT)
+#   to_number      New course number (e.g. C1000)
+#   campus_code    LACCD campus code (LACC, LAHC, LAPC, LATTC, LAMC, LASC,
+#                  ELAC, WLAC, LAVC). Use `*` for district-wide.
+#   effective_term First term where the new code applies (e.g. 202608 for
+#                  Fall 2026). Leave blank if unknown — the loader will
+#                  still create the edge.
+#   source_url     URL citing the rename (CCC catalog, district memo,
+#                  campus catalog page).
+#   notes          Short public provenance note.
+from_subject,from_number,to_subject,to_number,campus_code,effective_term,source_url,notes
+MATH,227,STAT,C1000,*,,https://www.cccco.edu/About-Us/Chancellors-Office/Divisions/Educational-Services-and-Support/common-course-numbering-project,California Common Course Numbering mapping.
+MATH,227,STAT,C1000E,*,,https://www.cccco.edu/About-Us/Chancellors-Office/Divisions/Educational-Services-and-Support/common-course-numbering-project,Embedded-support CCN variant.

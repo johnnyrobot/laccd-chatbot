@@ -1,0 +1,18 @@
+{
+  "ELAC": {"codes": ["ACCTG 001"]},
+  "LACC": {"codes": ["ACCTG 001"]},
+  "LAPC": {
+    "codes": [
+      "KIN ATH 503",
+      "KIN ATH 504",
+      "KIN ATH 506",
+      "KIN ATH 508",
+      "KIN ATH 511",
+      "KIN ATH 512",
+      "KIN ATH 513",
+      "KIN ATH 514",
+      "KIN ATH 516"
+    ]
+  },
+  "LAVC": {"codes": ["ACCTG 001"]}
+}

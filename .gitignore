@@ -1,0 +1,62 @@
+# Environment — glob, not literals. `.env` and `.env.local` alone left
+# `.env.production`, `.env.langfuse.prod` and friends unprotected.
+.env*
+!.env.example
+.venv/
+# Provider credential downloads (Neo4j Aura, etc. — never commit)
+Neo4j-*.txt
+
+# Private catalog/corpus sources used by ingestion tools
+.catalog-staging/
+data/source_documents/
+
+# Data (large files)
+data/*
+# …but track the small curated source-of-truth files under data/
+!data/ccn_renumbering_pairs.csv
+!data/addenda_index.json
+data/schedule_availability/
+lamc_website_documents/
+
+# Python
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.pyc
+*.pyo
+
+# Test results
+test_*_results.json
+dogfood-output/
+jina.txt
+.playwright-mcp/
+.firecrawl/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Firebase
+firebase-debug.log
+
+# Claude
+.claude/
+
+# Build artifacts
+dist/
+
+# Local structural-analysis output
+graphify-out/
+.worktrees/
+
+# Private release/backup material must never enter a checkout
+.private-release-backup/
+*-private-backup/

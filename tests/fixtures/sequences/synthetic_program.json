@@ -1,0 +1,78 @@
+{
+  "slug": "synthetic_program",
+  "label": "Synthetic program fixture",
+  "campus_code": "LAMC",
+  "program_id": "synthetic-program",
+  "program_info": {
+    "title": "Synthetic Student Success Program",
+    "awardTitle": "Test Award"
+  },
+  "elements": [
+    {
+      "name": "MATH 100",
+      "shortDescription": "Synthetic quantitative reasoning",
+      "requirement": {"requirementType": "MAJOR_CORE"},
+      "recommendedOpportunity": {"type": "COURSE", "term": {"termNumber": 1}, "courseCode": "MATH 100", "courseName": "Synthetic quantitative reasoning", "minUnits": 3.0, "maxUnits": 3.0}
+    },
+    {
+      "name": "ENGLISH 100",
+      "shortDescription": "Synthetic written communication",
+      "requirement": {"requirementType": "MAJOR_CORE"},
+      "recommendedOpportunity": {"type": "COURSE", "term": {"termNumber": 1}, "courseCode": "ENGLISH 100", "courseName": "Synthetic written communication", "minUnits": 3.0, "maxUnits": 3.0}
+    },
+    {
+      "name": "TEST 101",
+      "shortDescription": "Synthetic foundation A",
+      "requirement": {"requirementType": "MAJOR_CORE"},
+      "recommendedOpportunity": {"type": "COURSE", "term": {"termNumber": 1}, "courseCode": "TEST 101", "courseName": "Synthetic foundation A", "minUnits": 3.0, "maxUnits": 3.0}
+    },
+    {
+      "name": "TEST 102",
+      "shortDescription": "Synthetic foundation B",
+      "requirement": {"requirementType": "MAJOR_CORE"},
+      "recommendedOpportunity": {"type": "COURSE", "term": {"termNumber": 1}, "courseCode": "TEST 102", "courseName": "Synthetic foundation B", "minUnits": 3.0, "maxUnits": 3.0}
+    },
+    {
+      "name": "TEST 103",
+      "shortDescription": "Synthetic foundation C",
+      "requirement": {"requirementType": "MAJOR_CORE"},
+      "recommendedOpportunity": {"type": "COURSE", "term": {"termNumber": 1}, "courseCode": "TEST 103", "courseName": "Synthetic foundation C", "minUnits": 3.0, "maxUnits": 3.0}
+    },
+    {
+      "name": "TEST 201",
+      "shortDescription": "Synthetic advanced A",
+      "requirement": {"requirementType": "MAJOR_CORE"},
+      "recommendedOpportunity": {"type": "COURSE", "term": {"termNumber": 2}, "courseCode": "TEST 201", "courseName": "Synthetic advanced A", "minUnits": 3.0, "maxUnits": 3.0}
+    },
+    {
+      "name": "TEST 202",
+      "shortDescription": "Synthetic advanced B",
+      "requirement": {"requirementType": "MAJOR_CORE"},
+      "recommendedOpportunity": {"type": "COURSE", "term": {"termNumber": 2}, "courseCode": "TEST 202", "courseName": "Synthetic advanced B", "minUnits": 3.0, "maxUnits": 3.0}
+    },
+    {
+      "name": "TEST 203",
+      "shortDescription": "Synthetic advanced C",
+      "requirement": {"requirementType": "MAJOR_CORE"},
+      "recommendedOpportunity": {"type": "COURSE", "term": {"termNumber": 2}, "courseCode": "TEST 203", "courseName": "Synthetic advanced C", "minUnits": 3.0, "maxUnits": 3.0}
+    },
+    {
+      "name": "TEST 204",
+      "shortDescription": "Synthetic capstone A",
+      "requirement": {"requirementType": "MAJOR_CORE"},
+      "recommendedOpportunity": {"type": "COURSE", "term": {"termNumber": 2}, "courseCode": "TEST 204", "courseName": "Synthetic capstone A", "minUnits": 3.0, "maxUnits": 3.0}
+    },
+    {
+      "name": "TEST 205",
+      "shortDescription": "Synthetic capstone B",
+      "requirement": {"requirementType": "MAJOR_CORE"},
+      "recommendedOpportunity": {"type": "COURSE", "term": {"termNumber": 2}, "courseCode": "TEST 205", "courseName": "Synthetic capstone B", "minUnits": 3.0, "maxUnits": 3.0}
+    }
+  ],
+  "graph": {
+    "prerequisites": {"TEST 201": ["MATH 100"], "TEST 202": ["ENGLISH 100"]},
+    "advisories": {},
+    "corequisites": {},
+    "course_details": {}
+  }
+}

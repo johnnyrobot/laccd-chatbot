@@ -1,0 +1,57 @@
+services:
+  laccd-chatbot:
+    build: .
+    container_name: laccd-chatbot
+    restart: unless-stopped
+    env_file: ${ENV_FILE:-.env}
+    environment:
+      - APP_ENV=production
+      - PORT=8000
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    depends_on:
+      neo4j:
+        condition: service_started
+    networks:
+      - proxy
+
+  voice-agent:
+    build:
+      context: .
+      dockerfile: voice_agent/Dockerfile
+    container_name: laccd-voice-agent
+    restart: unless-stopped
+    env_file: ${ENV_FILE:-.env}
+    # LiveKit's endpoint uses geo-DNS and selects a cluster near the resolver.
+    # Use geo-aware public resolvers when the host resolver is not location-aware;
+    # otherwise voice traffic can be routed through a distant cluster.
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    depends_on:
+      neo4j:
+        condition: service_started
+    networks:
+      - proxy
+
+  neo4j:
+    image: neo4j:5.26.30-community@sha256:037cf5756f0135cbfd66b739b6df7c7c4bb100f9ce11602f6f9538e17e02c74d
+    container_name: laccd-neo4j
+    restart: unless-stopped
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD}
+      NEO4J_server_memory_heap_max__size: 512m
+      NEO4J_server_memory_pagecache_size: 256m
+    ports:
+      - "127.0.0.1:7688:7687"
+      - "127.0.0.1:7475:7474"
+    volumes:
+      - neo4j-data:/data
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
+
+volumes:
+  neo4j-data:

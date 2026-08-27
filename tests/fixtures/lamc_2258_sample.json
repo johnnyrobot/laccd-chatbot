@@ -1,0 +1,361 @@
+{
+ "campuscode": "LAMC",
+ "campusname": "Mission College",
+ "termcode": "2258",
+ "termname": "Fall 2025",
+ "classTypeList": [
+  {
+   "name": "IN-PERSON",
+   "value": "01  In Person"
+  },
+  {
+   "name": "ONLINE",
+   "value": "02  Online"
+  },
+  {
+   "name": "C19S",
+   "value": "03  Online Live"
+  },
+  {
+   "name": "HYFLEX",
+   "value": "04  HyFlex-In Person or Online"
+  },
+  {
+   "name": "HYBRID",
+   "value": "05  Hybrid-Partially Online"
+  },
+  {
+   "name": "OER",
+   "value": "06  Zero Textbook Cost (ZTC)"
+  },
+  {
+   "name": "LCT",
+   "value": "07  Low Textbook Cost"
+  },
+  {
+   "name": "NONCREDIT",
+   "value": "09  Noncredit"
+  },
+  {
+   "name": "BILINGUAL",
+   "value": "10  Bilingual"
+  },
+  {
+   "name": "NONENGLISH",
+   "value": "11  Not in English"
+  }
+ ],
+ "subjects": [
+  {
+   "name": "Administration Of Justice",
+   "code": "ADM JUS",
+   "courses": [
+    {
+     "subject": "ADM JUS",
+     "catalogNbr": "104",
+     "descr": "Intro Forensic Scien",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "90001 (LEC)",
+       "seats": "0",
+       "woi": "16",
+       "dates": "01/01/25 - 04/30/25",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "",
+         "times": "",
+         "room": "Sample Online",
+         "instr": "Sample Instructor A"
+        }
+       ],
+       "relsections": [],
+       "classType": [
+        "ONLINE",
+        "OER"
+       ]
+      },
+      {
+       "classNbr": "90002 (LEC)",
+       "seats": "Inquire",
+       "woi": "16",
+       "dates": "01/01/25 - 04/30/25",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "T Th",
+         "times": "2:00 PM - 3:25 PM",
+         "room": "Sample Room A",
+         "instr": "Sample Instructor B"
+        }
+       ],
+       "relsections": [],
+       "classType": [
+        "IN-PERSON"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Anatomy",
+   "code": "ANATOMY",
+   "courses": [
+    {
+     "subject": "ANATOMY",
+     "catalogNbr": "001",
+     "descr": "Intro To Human Anat",
+     "units": "4.00",
+     "sections": [
+      {
+       "classNbr": "90003 (LEC)",
+       "seats": "0",
+       "woi": "16",
+       "dates": "01/01/25 - 04/30/25",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "T Th",
+         "times": "7:15 AM - 8:40 AM",
+         "room": "Sample Room B",
+         "instr": "Sample Instructor C"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "90004 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "01/01/25 - 04/30/25",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "T",
+           "times": "8:50 AM - 12:00 PM",
+           "room": "Sample Room C",
+           "instr": "Sample Instructor C"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        },
+        {
+         "classNbr": "90005 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "01/01/25 - 04/30/25",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "Th",
+           "times": "8:50 AM - 12:00 PM",
+           "room": "Sample Room C",
+           "instr": "Sample Instructor C"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        },
+        {
+         "classNbr": "90006 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "01/01/25 - 04/30/25",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "F",
+           "times": "8:50 AM - 12:00 PM",
+           "room": "Sample Room C",
+           "instr": "Sample Instructor C"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON"
+       ]
+      },
+      {
+       "classNbr": "90007 (LEC)",
+       "seats": "0",
+       "woi": "16",
+       "dates": "01/01/25 - 04/30/25",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "M W",
+         "times": "5:15 PM - 6:40 PM",
+         "room": "Sample Room B",
+         "instr": "Sample Instructor D"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "90008 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "01/01/25 - 04/30/25",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "M",
+           "times": "6:50 PM - 10:00 PM",
+           "room": "Sample Room C",
+           "instr": "Sample Instructor D"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        },
+        {
+         "classNbr": "90009 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "01/01/25 - 04/30/25",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "W",
+           "times": "6:50 PM - 10:00 PM",
+           "room": "Sample Room C",
+           "instr": "Sample Instructor D"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON"
+       ]
+      },
+      {
+       "classNbr": "90010 (LEC)",
+       "seats": "1",
+       "woi": "16",
+       "dates": "01/01/25 - 04/30/25",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "W",
+         "times": "7:00 PM - 9:00 PM",
+         "room": "Sample Online Live",
+         "instr": "Sample Instructor E"
+        },
+        {
+         "days": "S",
+         "times": "11:20 AM - 12:30 PM",
+         "room": "Sample Room D",
+         "instr": "Sample Instructor E"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "90011 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "01/01/25 - 04/30/25",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "S",
+           "times": "8:00 AM - 11:10 AM",
+           "room": "Sample Room C",
+           "instr": "Sample Instructor E"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "HYBRID"
+         ]
+        },
+        {
+         "classNbr": "90012 (LAB)",
+         "seats": "1",
+         "woi": "16",
+         "dates": "01/01/25 - 04/30/25",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "S",
+           "times": "12:40 PM - 3:50 PM",
+           "room": "Sample Room C",
+           "instr": "Sample Instructor E"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "HYBRID"
+         ]
+        }
+       ],
+       "classType": [
+        "HYBRID"
+       ]
+      },
+      {
+       "classNbr": "90013 (LEC)",
+       "seats": "1",
+       "woi": "16",
+       "dates": "01/01/25 - 04/30/25",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "M",
+         "times": "12:15 PM - 1:40 PM",
+         "room": "Sample Room D",
+         "instr": "Sample Instructor F"
+        },
+        {
+         "days": "W",
+         "times": "12:15 PM - 1:40 PM",
+         "room": "Sample Online Live",
+         "instr": "Sample Instructor F"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "90014 (LAB)",
+         "seats": "1",
+         "woi": "16",
+         "dates": "01/01/25 - 04/30/25",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "M",
+           "times": "1:50 PM - 5:00 PM",
+           "room": "Sample Room C",
+           "instr": "Sample Instructor F"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "HYBRID"
+         ]
+        }
+       ],
+       "classType": [
+        "HYBRID"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

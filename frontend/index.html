@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+    <meta name="description" content="Ask the {{ campus.name }} AI assistant about classes, programs, transfer paths, prerequisites, financial aid, and more — by chat or live voice, 24/7.">
+    <title>{{ campus.code }} Chatbot — {{ campus.name }}</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23{{ campus.accent_color[1:] }}'/%3E%3C/svg%3E">
+    <link rel="preload" href="/fonts/ibm-plex-sans-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/styles.css?v={{ cache_v }}">
+    <style>
+      :root {
+        --accent: {{ campus.accent_color }};
+        --accent-hover: {{ campus.accent_hover }};
+        --accent-rgb: {{ campus.accent_rgb }};
+        --bubble-user: {{ campus.accent_color }};
+      }
+    </style>
+  </head>
+  <body data-campus-code="{{ campus.code }}">
+    <a class="skip-link" href="#message">Skip to chat input</a>
+    <main class="shell">
+      <!-- ── Left: Demo stage ── -->
+      <section class="demo-stage">
+        <div class="demo-card">
+          <span class="health-dot" id="health-dot" role="img" title="Checking backend status…" aria-label="Backend status: checking…"></span>
+          <p class="eyebrow">Beta / Demo</p>
+          <h1>{{ campus.code }} Chatbot Prototype</h1>
+          <p class="subtitle">
+            This is a development prototype of the {{ campus.name }} AI assistant.
+            Use the chat panel on the right to test questions, or click any sample below to auto-fill.
+          </p>
+          <a href="/how-it-works" class="learn-more-link">How it works <span aria-hidden="true">→</span></a>
+        </div>
+
+        <div class="question-sections">
+          <details class="q-group advanced-group" open>
+            <summary>Advanced Academic Questions</summary>
+            <div class="advanced-explainer">
+              <p class="comparison-intro">
+                Most higher-education chatbots use <strong>retrieval-augmented
+                generation (RAG)</strong>. RAG is useful for finding and summarizing
+                published student-service information. The difference appears when a
+                question requires several academic records, changing course numbers,
+                or live data to be considered together.
+              </p>
+
+              <div class="rag-comparison" role="group" aria-label="Comparison of a typical higher-education RAG chatbot and this assistant">
+                <div class="comparison-headings">
+                  <section class="comparison-heading rag-heading">
+                    <p class="comparison-kicker">Retrieval only</p>
+                    <h3>Typical higher-ed RAG chatbot</h3>
+                    <p>Finds a relevant campus webpage or document and summarizes what it says.</p>
+                  </section>
+                  <section class="comparison-heading assistant-heading">
+                    <p class="comparison-kicker">RAG + verified academic intelligence</p>
+                    <h3>This assistant</h3>
+                    <p>Answers the same service questions, then uses verified and live information when the answer must connect multiple academic facts.</p>
+                  </section>
+                </div>
+
+                <section class="service-comparison">
+                  <h4>Admissions, enrollment &amp; financial aid</h4>
+                  <div class="service-comparison-row">
+                    <article class="comparison-item rag-item">
+                      <p class="comparison-cell-label">Typical RAG</p>
+                      <strong>Explains applications and aid procedures</strong>
+                      <span>&ldquo;How do I apply?&rdquo; &ldquo;What financial-aid forms do I need?&rdquo; Retrieves the relevant instructions, deadlines, and office information.</span>
+                    </article>
+                    <article class="comparison-item assistant-item">
+                      <p class="comparison-cell-label">This assistant</p>
+                      <strong>Builds a candidate enrollment plan</strong>
+                      <span>&ldquo;I need 12 units. Which offered courses have no listed prerequisites, and which have zero-cost materials?&rdquo; Combines the published term schedule, course requirements, meeting times, and cost indicators.</span>
+                      <small>Supports planning; it does not determine aid eligibility, access a student account, or guarantee that a seat is still open.</small>
+                    </article>
+                  </div>
+                </section>
+
+                <section class="service-comparison">
+                  <h4>Counseling &amp; transfer</h4>
+                  <div class="service-comparison-row">
+                    <article class="comparison-item rag-item">
+                      <p class="comparison-cell-label">Typical RAG</p>
+                      <strong>Summarizes the transfer process</strong>
+                      <span>&ldquo;How do I transfer to a UC?&rdquo; Finds the transfer-center page, general steps, and counselor contact information.</span>
+                    </article>
+                    <article class="comparison-item assistant-item">
+                      <p class="comparison-cell-label">This assistant</p>
+                      <strong>Checks how a specific course applies</strong>
+                      <span>&ldquo;Is MATH 227 now STAT C1000, is it UC/CSU transferable, and which GE areas does it satisfy?&rdquo; Resolves the course history and checks authoritative academic facts.</span>
+                    </article>
+                  </div>
+                </section>
+
+                <section class="service-comparison">
+                  <h4>Registration &amp; class schedules</h4>
+                  <div class="service-comparison-row">
+                    <article class="comparison-item rag-item">
+                      <p class="comparison-cell-label">Typical RAG</p>
+                      <strong>Explains how registration works</strong>
+                      <span>&ldquo;How do I register?&rdquo; &ldquo;When is the deadline?&rdquo; Retrieves published steps, dates, and registration policies.</span>
+                    </article>
+                    <article class="comparison-item assistant-item">
+                      <p class="comparison-cell-label">This assistant</p>
+                      <strong>Finds sections that satisfy several needs</strong>
+                      <span>&ldquo;Which IGETC Area 2A courses are offered this term across LACCD, and which have zero-cost materials?&rdquo; Combines published schedules, campus filters, GE rules, and course-cost data.</span>
+                    </article>
+                  </div>
+                </section>
+
+                <section class="service-comparison">
+                  <h4>Academic programs &amp; degree planning</h4>
+                  <div class="service-comparison-row">
+                    <article class="comparison-item rag-item">
+                      <p class="comparison-cell-label">Typical RAG</p>
+                      <strong>Summarizes a program page</strong>
+                      <span>&ldquo;What courses are required for the Computer Science degree?&rdquo; Retrieves the published requirements and restates the list.</span>
+                    </article>
+                    <article class="comparison-item assistant-item">
+                      <p class="comparison-cell-label">This assistant</p>
+                      <strong>Turns requirements into an ordered plan</strong>
+                      <span>&ldquo;What is the complete prerequisite path, and how should I sequence these courses by term at my pace?&rdquo; Follows dependencies and applies unit limits to the program requirements.</span>
+                    </article>
+                  </div>
+                </section>
+
+                <div class="comparison-bottom">
+                  <p class="comparison-limit"><strong>Where retrieval stops:</strong> RAG alone cannot reliably reconcile separate records, follow a full dependency chain, or combine a current schedule with transfer and GE rules.</p>
+                  <p class="comparison-limit"><strong>What changes:</strong> This assistant can resolve course history, combine authoritative sources, and follow academic dependencies instead of asking the model to infer them from nearby text.</p>
+                </div>
+              </div>
+
+              <p class="comparison-bridge"><strong>Put simply:</strong> RAG retrieves passages. This assistant can use RAG <em>and</em> determine how verified academic facts apply together.</p>
+            </div>
+            <ul class="q-list" role="list">
+              <li><button class="q-btn advanced-btn" type="button" data-question="Is STAT C1000 transferable to UC and CSU?">A1: Is STAT C1000 transferable to UC and CSU?</button></li>
+              <li><button class="q-btn advanced-btn" type="button" data-question="What GE areas does ENGLISH C1000 satisfy?">A2: What GE areas does ENGLISH C1000 satisfy?</button></li>
+              <li><button class="q-btn advanced-btn" type="button" data-question="Is MATH 227 the same as STAT C1000?">A3: Is MATH 227 the same as STAT C1000?</button></li>
+              <li><button class="q-btn advanced-btn" type="button" data-question="What courses fulfill IGETC Area 2A (Math) at {{ campus.code }}?">A4: What courses fulfill IGETC Area 2A at {{ campus.code }}?</button></li>
+              <li><button class="q-btn advanced-btn" type="button" data-question="Does MATH 265 transfer to CSU?">A5: Does MATH 265 transfer to CSU?</button></li>
+              <li><button class="q-btn advanced-btn" type="button" data-question="What courses satisfy the CSU-GE Written Communication requirement?">A6: What courses satisfy CSU-GE Written Communication?</button></li>
+              <li><button class="q-btn advanced-btn" type="button" data-question="What happened to MATH 265? Was it renumbered?">A7: What happened to MATH 265? Was it renumbered?</button></li>
+              <li><button class="q-btn advanced-btn" type="button" data-question="Show me all course renumberings at {{ campus.code }}">A8: Show me all course renumberings at {{ campus.code }}</button></li>
+              <li><button class="q-btn advanced-btn" type="button" data-question="What Cal-GETC areas does BIOLOGY 005 satisfy?">A9: What Cal-GETC areas does BIOLOGY 005 satisfy?</button></li>
+              <li><button class="q-btn advanced-btn" type="button" data-question="Is CHEM C211 UC transferable?">A10: Is CHEM C211 UC transferable?</button></li>
+              <li><button class="q-btn advanced-btn" type="button" data-question="Who teaches MATH 261 at {{ campus.code }}?">A11: Who teaches MATH 261 at {{ campus.code }}?</button></li>
+              <li><button class="q-btn advanced-btn" type="button" data-question="What courses does Professor Smith teach?">A12: What courses does Professor Smith teach?</button></li>
+              <li><button class="q-btn advanced-btn" type="button" data-question="What are the prerequisites for MATH 261?">A13: What are the prerequisites for MATH 261?</button></li>
+              <li><button class="q-btn advanced-btn" type="button" data-question="What do I need to take before ENGLISH C1000?">A14: What do I need to take before ENGLISH C1000?</button></li>
+            </ul>
+          </details>
+
+          <details class="q-group" open>
+            <summary>General / Campus Info (Q1–Q6)</summary>
+            <ul class="q-list" role="list">
+              <li><button class="q-btn" type="button" data-question="What are the admissions requirements for {{ campus.code }}?">Q1: What are the admissions requirements for {{ campus.code }}?</button></li>
+              <li><button class="q-btn" type="button" data-question="How do I apply for financial aid at {{ campus.nickname }} College?">Q2: How do I apply for financial aid at {{ campus.nickname }} College?</button></li>
+              <li><button class="q-btn" type="button" data-question="Does {{ campus.nickname }} College have parking? How much does it cost?">Q3: Does {{ campus.nickname }} College have parking? How much does it cost?</button></li>
+              <li><button class="q-btn" type="button" data-question="How do I transfer from {{ campus.code }} to a CSU or UC?">Q4: How do I transfer from {{ campus.code }} to a CSU or UC?</button></li>
+              <li><button class="q-btn" type="button" data-question="What tutoring services does {{ campus.code }} offer?">Q5: What tutoring services does {{ campus.code }} offer?</button></li>
+              <li><button class="q-btn" type="button" data-question="How much does it cost to attend {{ campus.code }} per semester?">Q6: How much does it cost to attend {{ campus.code }} per semester?</button></li>
+            </ul>
+          </details>
+
+          <details class="q-group">
+            <summary>Schedule / Class Lookup (Q7–Q14)</summary>
+            <ul class="q-list" role="list">
+              <li><button class="q-btn" type="button" data-question="What math classes are available this spring at {{ campus.nickname }}?">Q7: What math classes are available this spring at {{ campus.nickname }}?</button></li>
+              <li><button class="q-btn" type="button" data-question="Show me the ENGLISH 102 schedule at {{ campus.short_name }}">Q8: Show me the ENGLISH 102 schedule at {{ campus.short_name }}</button></li>
+              <li><button class="q-btn" type="button" data-question="Are there any STAT C1000 sections this spring?">Q9: Are there any STAT C1000 sections this spring?</button></li>
+              <li><button class="q-btn" type="button" data-question="What biology classes does {{ campus.short_name }} offer this spring?">Q10: What biology classes does {{ campus.short_name }} offer this spring?</button></li>
+              <li><button class="q-btn" type="button" data-question="What {{ q.q11_subject }} classes are available at {{ campus.code }}?">Q11: What {{ q.q11_subject }} classes are available at {{ campus.code }}?</button></li>
+              <li><button class="q-btn" type="button" data-question="Is CHEM 101 offered at {{ campus.code }} this spring?">Q12: Is CHEM 101 offered at {{ campus.code }} this spring?</button></li>
+              <li><button class="q-btn" type="button" data-question="What {{ q.q13_course }} classes are available?">Q13: What {{ q.q13_course }} classes are available?</button></li>
+              <li><button class="q-btn" type="button" data-question="What sections of sociology are available in summer 2026?">Q14: What sections of sociology are available in summer 2026?</button></li>
+            </ul>
+          </details>
+
+          <details class="q-group">
+            <summary>Programs / Degrees (Q15–Q20)</summary>
+            <ul class="q-list" role="list">
+              <li><button class="q-btn" type="button" data-question="What are the requirements for the Computer Science degree at {{ campus.nickname }}?">Q15: What are the requirements for the Computer Science degree?</button></li>
+              <li><button class="q-btn" type="button" data-question="Tell me about the {{ q.q16_certificate }} at {{ campus.code }}">Q16: Tell me about the {{ q.q16_certificate }} at {{ campus.code }}</button></li>
+              <li><button class="q-btn" type="button" data-question="What are the requirements for the {{ q.q17_program }} at {{ campus.nickname }}?">Q17: What are the requirements for the {{ q.q17_program }}?</button></li>
+              <li><button class="q-btn" type="button" data-question="Tell me about the Sociology degree for transfer">Q18: Tell me about the Sociology degree for transfer</button></li>
+              <li><button class="q-btn" type="button" data-question="Does {{ campus.nickname }} have a {{ q.q19_certificate }} certificate?">Q19: Does {{ campus.nickname }} have a {{ q.q19_certificate }} certificate?</button></li>
+              <li><button class="q-btn" type="button" data-question="Tell me about the {{ q.q20_program }} at {{ campus.code }}">Q20: Tell me about the {{ q.q20_program }}</button></li>
+            </ul>
+          </details>
+
+          <details class="q-group">
+            <summary>Cross-Campus / District (Q21–Q25)</summary>
+            <ul class="q-list" role="list">
+              <li><button class="q-btn" type="button" data-question="Is physics offered at any LACCD campus this spring?">Q21: Is physics offered at any LACCD campus this spring?</button></li>
+              <li><button class="q-btn" type="button" data-question="Where is economics offered across all LACCD campuses?">Q22: Where is economics offered across all LACCD campuses?</button></li>
+              <li><button class="q-btn" type="button" data-question="Are there nursing classes at any campus in the district?">Q23: Are there nursing classes at any campus in the district?</button></li>
+              <li><button class="q-btn" type="button" data-question="Which LACCD campuses offer music classes this spring?">Q24: Which LACCD campuses offer music classes this spring?</button></li>
+              <li><button class="q-btn" type="button" data-question="Do any LACCD campuses offer a nursing degree?">Q25: Do any LACCD campuses offer a nursing degree?</button></li>
+            </ul>
+          </details>
+
+          <details class="q-group">
+            <summary>RAG Override Phrases (Q26–Q35)</summary>
+            <ul class="q-list" role="list">
+              <li><button class="q-btn" type="button" data-question="What is the address of {{ campus.code }}?">Q26: What is the address of {{ campus.code }}?</button></li>
+              <li><button class="q-btn" type="button" data-question="What is the {{ q.q27_help_desk }} phone number?">Q27: What is the {{ q.q27_help_desk }} phone number?</button></li>
+              <li><button class="q-btn" type="button" data-question="How do I get my student ID?">Q28: How do I get my student ID?</button></li>
+              <li><button class="q-btn" type="button" data-question="Does {{ campus.code }} offer online classes?">Q29: Does {{ campus.code }} offer online classes?</button></li>
+              <li><button class="q-btn" type="button" data-question="What are the EOPS eligibility requirements?">Q30: What are the EOPS eligibility requirements?</button></li>
+              <li><button class="q-btn" type="button" data-question="Where is the {{ campus.code }} bookstore?">Q31: Where is the {{ campus.code }} bookstore?</button></li>
+              <li><button class="q-btn" type="button" data-question="How do I order my transcripts?">Q32: How do I order my transcripts?</button></li>
+              <li><button class="q-btn" type="button" data-question="What is the DSPS office and who qualifies?">Q33: What is the DSPS office and who qualifies?</button></li>
+              <li><button class="q-btn" type="button" data-question="How do I reset my student email password?">Q34: How do I reset my student email password?</button></li>
+              <li><button class="q-btn" type="button" data-question="What GPA do I need to transfer?">Q35: What GPA do I need to transfer?</button></li>
+            </ul>
+          </details>
+
+          <details class="q-group">
+            <summary>Schedule — Specific Courses (Q36–Q43)</summary>
+            <ul class="q-list" role="list">
+              <li><button class="q-btn" type="button" data-question="Is ANATOMY 001 offered this spring?">Q36: Is ANATOMY 001 offered this spring?</button></li>
+              <li><button class="q-btn" type="button" data-question="What ACCTG accounting classes are available?">Q37: What ACCTG accounting classes are available?</button></li>
+              <li><button class="q-btn" type="button" data-question="Show me the ART schedule at {{ campus.code }} for spring">Q38: Show me the ART schedule at {{ campus.code }} for spring</button></li>
+              <li><button class="q-btn" type="button" data-question="Are there any evening ENGLISH 101 classes?">Q39: Are there any evening ENGLISH 101 classes?</button></li>
+              <li><button class="q-btn" type="button" data-question="What PSYCH 001 sections are available this spring?">Q40: What PSYCH 001 sections are available this spring?</button></li>
+              <li><button class="q-btn" type="button" data-question="Is MATH 227 offered this spring?">Q41: Is MATH 227 offered this spring? (cross-ref test)</button></li>
+              <li><button class="q-btn" type="button" data-question="What philosophy classes does {{ campus.nickname }} offer?">Q42: What philosophy classes does {{ campus.nickname }} offer?</button></li>
+              <li><button class="q-btn" type="button" data-question="Are there any ASL sign language classes at {{ campus.code }}?">Q43: Are there any ASL sign language classes at {{ campus.code }}?</button></li>
+            </ul>
+          </details>
+
+          <details class="q-group">
+            <summary>Schedule — Term Edge Cases (Q44–Q47)</summary>
+            <ul class="q-list" role="list">
+              <li><button class="q-btn" type="button" data-question="What math classes are available in winter 2026?">Q44: What math classes are available in winter 2026?</button></li>
+              <li><button class="q-btn" type="button" data-question="Are there fall 2026 English classes at {{ campus.nickname }}?">Q45: Are there fall 2026 English classes at {{ campus.nickname }}?</button></li>
+              <li><button class="q-btn" type="button" data-question="What classes were available fall 2025?">Q46: What classes were available fall 2025?</button></li>
+              <li><button class="q-btn" type="button" data-question="Show me spring 2026 chemistry sections at {{ campus.code }}">Q47: Show me spring 2026 chemistry sections at {{ campus.code }}</button></li>
+            </ul>
+          </details>
+
+          <details class="q-group">
+            <summary>Cross-Campus Schedule (Q48–Q53)</summary>
+            <ul class="q-list" role="list">
+              <li><button class="q-btn" type="button" data-question="Which LACCD campuses offer anatomy classes?">Q48: Which LACCD campuses offer anatomy classes?</button></li>
+              <li><button class="q-btn" type="button" data-question="Is accounting offered at any campus in the district?">Q49: Is accounting offered at any campus in the district?</button></li>
+              <li><button class="q-btn" type="button" data-question="Where can I take psychology across all LACCD campuses?">Q50: Where can I take psychology across all LACCD campuses?</button></li>
+              <li><button class="q-btn" type="button" data-question="Are there art classes at other campuses besides {{ campus.nickname }}?">Q51: Are there art classes at other campuses besides {{ campus.nickname }}?</button></li>
+              <li><button class="q-btn" type="button" data-question="Which LACCD campus has the most math sections?">Q52: Which LACCD campus has the most math sections?</button></li>
+              <li><button class="q-btn" type="button" data-question="Where is ASL offered across the district?">Q53: Where is ASL offered across the district?</button></li>
+            </ul>
+          </details>
+
+          <details class="q-group">
+            <summary>Programs — Single Campus (Q54–Q59)</summary>
+            <ul class="q-list" role="list">
+              <li><button class="q-btn" type="button" data-question="What are the requirements for the {{ q.q54_degree }} degree?">Q54: What are the requirements for the {{ q.q54_degree }} degree?</button></li>
+              <li><button class="q-btn" type="button" data-question="Tell me about the {{ q.q55_certificate }} certificate at {{ campus.nickname }}">Q55: Tell me about the {{ q.q55_certificate }} certificate at {{ campus.nickname }}</button></li>
+              <li><button class="q-btn" type="button" data-question="Does {{ campus.code }} have a {{ q.q56_program }} program?">Q56: Does {{ campus.code }} have a {{ q.q56_program }} program?</button></li>
+              <li><button class="q-btn" type="button" data-question="What's the Child Development degree at {{ campus.short_name }}?">Q57: What's the Child Development degree at {{ campus.short_name }}?</button></li>
+              <li><button class="q-btn" type="button" data-question="Tell me about the Business Administration transfer degree">Q58: Tell me about the Business Administration transfer degree</button></li>
+              <li><button class="q-btn" type="button" data-question="Does {{ campus.nickname }} have a {{ q.q59_program }} program?">Q59: Does {{ campus.nickname }} have a {{ q.q59_program }} program?</button></li>
+            </ul>
+          </details>
+
+          <details class="q-group">
+            <summary>Programs — District-Wide (Q60–Q63)</summary>
+            <ul class="q-list" role="list">
+              <li><button class="q-btn" type="button" data-question="Do any LACCD campuses offer a Film program?">Q60: Do any LACCD campuses offer a Film program?</button></li>
+              <li><button class="q-btn" type="button" data-question="Which colleges in the district have an Engineering degree?">Q61: Which colleges in the district have an Engineering degree?</button></li>
+              <li><button class="q-btn" type="button" data-question="Where can I study Architecture across LACCD?">Q62: Where can I study Architecture across LACCD?</button></li>
+              <li><button class="q-btn" type="button" data-question="Do any LACCD campuses offer a Paralegal certificate?">Q63: Do any LACCD campuses offer a Paralegal certificate?</button></li>
+            </ul>
+          </details>
+
+          <details class="q-group">
+            <summary>Language Detection (Q64–Q68)</summary>
+            <ul class="q-list" role="list">
+              <li><button class="q-btn" type="button" data-question="Cuanto cuesta asistir a {{ campus.code }}?">Q64: <span lang="es">Cuanto cuesta asistir a {{ campus.code }}?</span> (Spanish)</button></li>
+              <li><button class="q-btn" type="button" data-question="Ինչպես դիմել {{ campus.code }}?">Q65: <span lang="hy">Ինչպես դիմել {{ campus.code }}?</span> (Armenian)</button></li>
+              <li><button class="q-btn" type="button" data-question="{{ campus.code }}有哪些数学课？">Q66: <span lang="zh">{{ campus.code }}有哪些数学课？</span> (Chinese)</button></li>
+              <li><button class="q-btn" type="button" data-question="{{ campus.code }}で看護プログラムはありますか？">Q67: <span lang="ja">{{ campus.code }}で看護プログラムはありますか？</span> (Japanese)</button></li>
+              <li><button class="q-btn" type="button" data-question="Quels programmes {{ campus.code }} offre-t-il?">Q68: <span lang="fr">Quels programmes {{ campus.code }} offre-t-il?</span> (French)</button></li>
+            </ul>
+          </details>
+
+          <details class="q-group">
+            <summary>ZTC / Textbook Cost (Q76–Q82)</summary>
+            <ul class="q-list" role="list">
+              <li><button class="q-btn" type="button" data-question="What classes have zero textbook cost?">Q76: What classes have zero textbook cost?</button></li>
+              <li><button class="q-btn" type="button" data-question="Are there any ZTC English classes?">Q77: Are there any ZTC English classes?</button></li>
+              <li><button class="q-btn" type="button" data-question="Which subjects offer free textbook sections?">Q78: Which subjects offer free textbook sections?</button></li>
+              <li><button class="q-btn" type="button" data-question="Does {{ campus.code }} have low cost textbook classes?">Q79: Does {{ campus.code }} have low cost textbook classes?</button></li>
+              <li><button class="q-btn" type="button" data-question="Are there ZTC classes at other campuses?">Q80: Are there ZTC classes at other campuses?</button></li>
+              <li><button class="q-btn" type="button" data-question="I can't afford textbooks, what are my options?">Q81: I can't afford textbooks, what are my options?</button></li>
+              <li><button class="q-btn" type="button" data-question="Are there free books for my math class?">Q82: Are there free books for my math class?</button></li>
+            </ul>
+          </details>
+
+          <details class="q-group">
+            <summary>Course Sequences (SEQ1–SEQ4)</summary>
+            <ul class="q-list" role="list">
+              <li><button class="q-btn" type="button" data-question="What is the course sequence for the {{ q.seq1_program }} program?">SEQ1: What is the course sequence for the {{ q.seq1_program }} program?</button></li>
+              <li><button class="q-btn" type="button" data-question="Show me the course plan for {{ q.seq2_program }}">SEQ2: Show me the course plan for {{ q.seq2_program }}</button></li>
+              <li><button class="q-btn" type="button" data-question="What order should I take {{ q.seq3_program }} courses?">SEQ3: What order should I take {{ q.seq3_program }} courses?</button></li>
+              <li><button class="q-btn" type="button" data-question="Show me the prerequisite chain for the Accounting program">SEQ4: Show me the prerequisite chain for the Accounting program</button></li>
+            </ul>
+          </details>
+
+          <details class="q-group">
+            <summary>Follow-Up Cross-Reference (XREF1–XREF4)</summary>
+            <ul class="q-list" role="list">
+              <li><button class="q-btn" type="button" data-question="Tell me about the Computer Science AS degree at {{ campus.code }}">XREF1: Tell me about the Computer Science AS degree at {{ campus.code }}</button></li>
+              <li><button class="q-btn" type="button" data-question="Which of these courses are offered in Spring 2026?">XREF2: Which of these courses are offered in Spring 2026?</button></li>
+              <li><button class="q-btn" type="button" data-question="What about at other campuses?">XREF3: What about at other campuses?</button></li>
+              <li><button class="q-btn" type="button" data-question="Show me the course sequence for {{ q.seq1_program }}">XREF4: Show me the course sequence for {{ q.seq1_program }} (then ask: Which semester 1 courses are offered this spring?)</button></li>
+            </ul>
+          </details>
+
+          <details class="q-group">
+            <summary>Ambiguous / Edge Cases (Q69–Q75)</summary>
+            <ul class="q-list" role="list">
+              <li><button class="q-btn" type="button" data-question="What career options does a nursing degree give me?">Q69: What career options does a nursing degree give me?</button></li>
+              <li><button class="q-btn" type="button" data-question="I'm a high school student, can I take classes at {{ campus.code }}?">Q70: I'm a high school student, can I take classes at {{ campus.code }}?</button></li>
+              <li><button class="q-btn" type="button" data-question="How much is parking and what classes are available?">Q71: How much is parking and what classes are available?</button></li>
+              <li><button class="q-btn" type="button" data-question="Tell me about counseling services and requirements">Q72: Tell me about counseling services and requirements</button></li>
+              <li><button class="q-btn" type="button" data-question="What certifications can I get at {{ campus.nickname }}?">Q73: What certifications can I get at {{ campus.nickname }}?</button></li>
+              <li><button class="q-btn" type="button" data-question="Does {{ campus.code }} have a transfer program to UCLA?">Q74: Does {{ campus.code }} have a transfer program to UCLA?</button></li>
+              <li><button class="q-btn" type="button" data-question="What are the CalWORKs requirements at {{ campus.nickname }}?">Q75: What are the CalWORKs requirements at {{ campus.nickname }}?</button></li>
+            </ul>
+          </details>
+        </div>
+      </section>
+
+      <!-- ── Right: Chat side panel ── -->
+      <aside class="chat-panel">
+        <header class="chat-header">
+          <div>
+            <p class="eyebrow">{{ campus.code }} Assistant</p>
+            <h2>Ask a question</h2>
+          </div>
+          {% if campus.has_voice %}
+          <div class="voice-cta">
+            <button id="voice-fab" class="voice-btn" type="button" aria-label="Start voice conversation" title="Talk to {{ campus.code }} Assistant">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+              <span>Live Voice Agent</span>
+            </button>
+            <span class="voice-or-call">or call <a href="tel:{{ campus.phone_number }}">{{ campus.phone_display }}</a></span>
+          </div>
+          {% endif %}
+        </header>
+
+        <section id="messages" class="messages" role="log" aria-label="Chat messages" aria-live="polite" aria-relevant="additions">
+        </section>
+
+        <div id="typing-indicator" class="typing-indicator" hidden aria-hidden="true">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+
+        <div id="sr-announcements" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+
+        <form id="chat-form" class="chat-form">
+          <label for="message" class="sr-only">Type your message to the assistant</label>
+          <div class="input-row">
+            <textarea
+              id="message"
+              rows="1"
+              placeholder="Ask about classes, programs, counseling…"
+            ></textarea>
+            <button type="submit" id="send-btn" aria-label="Send message">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M3 10h14M11 4l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          <p class="input-hint">Enter to send, Shift+Enter for new line</p>
+        </form>
+      </aside>
+    </main>
+
+    {% if campus.has_voice %}
+    <!-- Voice widget overlay -->
+    <div id="voice-widget" class="voice-widget" role="dialog" aria-modal="true" aria-label="Live voice conversation" hidden>
+      <div class="voice-panel">
+        <div class="voice-header">
+          <div class="voice-header-left">
+            <span id="voice-state-dot" class="voice-state-dot"></span>
+            <span id="voice-state-text" class="voice-state-text">Connecting...</span>
+          </div>
+          <button id="voice-end-btn" class="voice-end-btn" type="button" aria-label="End voice session">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        <div class="voice-body">
+          <div id="voice-visualizer" class="voice-visualizer">
+            <div class="voice-bar"></div><div class="voice-bar"></div><div class="voice-bar"></div>
+            <div class="voice-bar"></div><div class="voice-bar"></div><div class="voice-bar"></div>
+            <div class="voice-bar"></div><div class="voice-bar"></div><div class="voice-bar"></div>
+          </div>
+          <div id="voice-transcript" class="voice-transcript" role="log" aria-label="Voice transcript"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/vendor/livekit-client-2.9.5.umd.js"></script>
+    {% endif %}
+    <script src="/app.js?v={{ cache_v }}"></script>
+  </body>
+</html>

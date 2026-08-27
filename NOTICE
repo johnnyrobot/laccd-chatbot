@@ -1,0 +1,15 @@
+LACCD Chatbot
+Copyright 2026 LACCD Chatbot contributors
+
+The Android application in mobile/ is derived from Google AI Edge Gallery.
+The original attribution and a description of modifications are retained in
+mobile/NOTICE, with the applicable Apache License 2.0 text in mobile/LICENSE.
+
+Third-party dependencies and bundled assets remain subject to their respective
+licenses and notices.
+
+Bundled frontend assets:
+  - IBM Plex fonts, Copyright 2017 IBM Corp., SIL Open Font License 1.1.
+    See frontend/fonts/LICENSE-IBM-PLEX.txt.
+  - LiveKit JavaScript Client 2.9.5, Apache License 2.0. See
+    frontend/vendor/livekit-client-LICENSE.txt.

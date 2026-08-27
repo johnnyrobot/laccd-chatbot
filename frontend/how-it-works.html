@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+    <meta name="description" content="How the {{ campus.name }} AI assistant combines verified academic information, live data sources, and retrieval to provide grounded answers.">
+    <title>How It Works — {{ campus.name }} Chatbot</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23{{ campus.accent_color[1:] }}'/%3E%3C/svg%3E">
+    <link rel="preload" href="/fonts/ibm-plex-sans-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/styles.css?v={{ cache_v }}">
+    <style>
+      :root {
+        --accent: {{ campus.accent_color }};
+        --accent-hover: {{ campus.accent_hover }};
+        --accent-rgb: {{ campus.accent_rgb }};
+      }
+
+      body {
+        height: auto;
+        min-height: 100dvh;
+        background: var(--bg-light);
+      }
+
+      /* WCAG: visible-on-focus skip link */
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 8px;
+        z-index: 100;
+        padding: 0.5rem 0.85rem;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border-radius: 6px;
+        text-decoration: none;
+      }
+      .skip-link:focus {
+        top: 8px;
+        outline: 3px solid var(--focus);
+        outline-offset: 2px;
+      }
+
+      /* WCAG: consistent focus-visible across interactive elements */
+      a:focus-visible,
+      button:focus-visible {
+        outline: 3px solid var(--focus);
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+
+      .hiw-page {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 2.5rem 1.5rem 4rem;
+      }
+
+      .hiw-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-bottom: 1.5rem;
+        padding: 0.4rem 0.1rem;
+        font-size: 0.94rem;
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 500;
+      }
+      .hiw-back:hover { text-decoration: underline; }
+
+      .hiw-hero {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 2.5rem 2.25rem;
+        margin-bottom: 1.5rem;
+        border-top: 4px solid var(--accent);
+      }
+      .hiw-hero .eyebrow { color: var(--accent); }
+      .hiw-hero h1 {
+        margin: 0.4rem 0 0.75rem;
+        font-size: 2.15rem;
+        font-weight: 700;
+        line-height: 1.15;
+        color: var(--text);
+      }
+      .hiw-hero p.lead {
+        margin: 0;
+        font-size: 1.13rem;
+        line-height: 1.6;
+        color: var(--text-muted);
+      }
+      .campus-links {
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--border);
+      }
+      .campus-links-label {
+        margin: 0 0 0.7rem;
+        color: var(--text);
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .campus-links-list {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.55rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .campus-chat-link {
+        display: flex;
+        min-height: 44px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.6rem;
+        padding: 0.65rem 0.8rem;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg-light);
+        color: var(--text);
+        font-size: 0.92rem;
+        font-weight: 600;
+        line-height: 1.25;
+        text-decoration: none;
+        transition:
+          background-color 0.15s ease,
+          border-color 0.15s ease,
+          transform 0.15s ease;
+      }
+      .campus-chat-link:hover {
+        border-color: var(--accent);
+        background: rgba(var(--accent-rgb), 0.08);
+        transform: translateY(-1px);
+      }
+      .campus-chat-link .campus-code {
+        flex: none;
+        color: var(--accent);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+      }
+
+      .hiw-section {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 2rem 2.25rem;
+        margin-bottom: 1.25rem;
+      }
+      .hiw-section h2 {
+        margin: 0 0 0.75rem;
+        font-size: 1.35rem;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .hiw-section .subheading {
+        margin: 1.75rem 0 0.5rem;
+        font-size: 1.06rem;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .hiw-section p {
+        margin: 0 0 1rem;
+        line-height: 1.65;
+        color: var(--text);
+        font-size: 1.05rem;
+      }
+      .hiw-section p:last-child { margin-bottom: 0; }
+
+      /* Doorways grid */
+      .doorways {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 0.85rem;
+        margin-top: 1.25rem;
+      }
+      .doorway {
+        padding: 1.1rem 1.2rem;
+        background: var(--bg-light);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+      }
+      .doorway-icon {
+        display: inline-flex;
+        width: 32px; height: 32px;
+        align-items: center; justify-content: center;
+        background: rgba(var(--accent-rgb), 0.1);
+        color: var(--accent);
+        border-radius: 8px;
+        margin-bottom: 0.55rem;
+      }
+      .doorway h3 {
+        margin: 0 0 0.3rem;
+        font-size: 1.02rem;
+        font-weight: 600;
+      }
+      .doorway p {
+        margin: 0;
+        font-size: 0.94rem;
+        color: var(--text-muted);
+        line-height: 1.55;
+      }
+
+      /* Data sources */
+      .source-list {
+        list-style: none;
+        margin: 1rem 0 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .source-list li {
+        display: grid;
+        grid-template-columns: 32px 1fr;
+        gap: 0.85rem;
+        padding: 0.95rem 1.1rem;
+        background: var(--bg-light);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        align-items: start;
+      }
+      .source-num {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px; height: 28px;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.85rem;
+        border-radius: 50%;
+      }
+      .source-list h3 {
+        margin: 0 0 0.2rem;
+        font-size: 1.03rem;
+        font-weight: 600;
+      }
+      .source-list p {
+        margin: 0;
+        font-size: 0.94rem;
+        color: var(--text-muted);
+        line-height: 1.55;
+      }
+      .source-list .live-tag,
+      .source-list .static-tag {
+        display: inline-block;
+        margin-left: 0.4rem;
+        padding: 2px 8px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        border-radius: 4px;
+        vertical-align: 2px;
+      }
+      /* WCAG AA: 6.3:1 on near-white background */
+      .live-tag { background: rgba(26, 135, 84, 0.16); color: #0f5d36; }
+      .static-tag { background: rgba(var(--accent-rgb), 0.12); color: var(--accent); }
+
+      /* Diagrams */
+      .diagram {
+        margin: 1rem 0 1.25rem;
+        padding: 1.1rem 1.25rem;
+        background: #1a1a2e;
+        color: #e8e9f3;
+        border-radius: 10px;
+        overflow-x: auto;
+        font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.84rem;
+        line-height: 1.55;
+        white-space: pre;
+      }
+
+      /* Academic capability examples */
+      .capability-examples {
+        margin: 1rem 0 1.25rem;
+        padding: 1.1rem 1.25rem;
+        background: var(--bg-light);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        border-radius: 8px;
+        font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.92rem;
+        line-height: 1.95;
+        color: var(--text);
+        overflow-x: auto;
+      }
+      .capability-examples .fact-label {
+        display: inline-block;
+        padding: 2px 8px;
+        margin: 0 4px;
+        background: rgba(var(--accent-rgb), 0.14);
+        color: var(--accent);
+        border-radius: 4px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        font-family: "IBM Plex Sans", system-ui, sans-serif;
+      }
+
+      .compare-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.85rem;
+        margin: 1.25rem 0;
+      }
+      .compare-cell {
+        padding: 1rem 1.1rem;
+        border-radius: 10px;
+        font-size: 0.96rem;
+        line-height: 1.55;
+      }
+      .compare-cell h3 {
+        margin: 0 0 0.5rem;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .compare-cell p { margin: 0; }
+      .compare-cell.rag {
+        background: rgba(192, 57, 43, 0.06);
+        border: 1px solid rgba(192, 57, 43, 0.3);
+      }
+      /* WCAG AA: #a02818 on near-white = 6.5:1 */
+      .compare-cell.rag h3 { color: #a02818; }
+      .compare-cell.enhanced {
+        background: rgba(26, 135, 84, 0.06);
+        border: 1px solid rgba(26, 135, 84, 0.3);
+      }
+      /* WCAG AA: #0f5d36 on near-white = 7.6:1 */
+      .compare-cell.enhanced h3 { color: #0f5d36; }
+
+      .lift-list {
+        margin: 1rem 0 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      .lift-list li {
+        padding: 0.95rem 1.2rem;
+        background: var(--bg-light);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.96rem;
+        line-height: 1.55;
+      }
+      .lift-list strong {
+        display: block;
+        font-size: 0.92rem;
+        color: var(--accent);
+        margin-bottom: 0.2rem;
+      }
+
+      @media (max-width: 600px) {
+        .compare-grid { grid-template-columns: 1fr; }
+      }
+
+      /* AI vs deterministic */
+      .split-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.85rem;
+        margin: 1.25rem 0 0;
+      }
+      .split-cell {
+        padding: 1.1rem 1.25rem;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+      }
+      .split-cell h3 {
+        margin: 0 0 0.6rem;
+        font-size: 0.84rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+      }
+      .split-cell .badge {
+        display: inline-block;
+        width: 10px; height: 10px;
+        border-radius: 50%;
+      }
+      .split-cell.deterministic { background: rgba(var(--accent-rgb), 0.05); }
+      .split-cell.deterministic h3 { color: var(--accent); }
+      .split-cell.deterministic .badge { background: var(--accent); }
+      /* WCAG AA: #7a4500 on near-white = 6.5:1 (var(--warning) #c87b0a fails AA at 3.4:1) */
+      .split-cell.ai { background: rgba(122, 69, 0, 0.05); border-color: rgba(122, 69, 0, 0.3); }
+      .split-cell.ai h3 { color: #7a4500; }
+      .split-cell.ai .badge { background: #7a4500; }
+      .split-cell ul {
+        margin: 0;
+        padding-left: 1.1rem;
+        font-size: 0.94rem;
+        line-height: 1.55;
+      }
+      .split-cell li { margin-bottom: 0.4rem; }
+      .split-cell li:last-child { margin-bottom: 0; }
+
+      .mech-list {
+        margin: 1rem 0 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: mech;
+      }
+      .mech-list li {
+        counter-increment: mech;
+        position: relative;
+        padding: 0.95rem 1.2rem 0.95rem 3.2rem;
+        background: var(--bg-light);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.96rem;
+        line-height: 1.55;
+        margin-bottom: 0.65rem;
+      }
+      .mech-list li::before {
+        content: counter(mech);
+        position: absolute;
+        left: 0.95rem;
+        top: 0.95rem;
+        width: 1.6rem;
+        height: 1.6rem;
+        background: var(--accent);
+        color: #fff;
+        font-size: 0.85rem;
+        font-weight: 700;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .mech-list strong {
+        display: block;
+        color: var(--text);
+        margin-bottom: 0.15rem;
+        font-size: 0.98rem;
+      }
+
+      .honest-callout {
+        margin: 1.25rem 0 0;
+        padding: 1.1rem 1.3rem;
+        /* WCAG AA: darkened amber border for 4.5:1+ separation */
+        background: rgba(122, 69, 0, 0.05);
+        border: 1px solid rgba(122, 69, 0, 0.3);
+        border-left: 3px solid #7a4500;
+        border-radius: 8px;
+        font-size: 0.94rem;
+        line-height: 1.6;
+      }
+      .honest-callout h3 {
+        margin: 0 0 0.4rem;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        /* WCAG AA: 6.5:1 on near-white */
+        color: #7a4500;
+      }
+      .honest-callout p { font-size: 0.94rem; line-height: 1.6; }
+      .honest-callout ul { margin: 0.4rem 0 0; padding-left: 1.2rem; font-size: 0.94rem; }
+      .honest-callout li { margin-bottom: 0.35rem; line-height: 1.55; }
+      .honest-callout li:last-child { margin-bottom: 0; }
+
+      @media (max-width: 600px) {
+        .split-grid { grid-template-columns: 1fr; }
+      }
+
+      .pipeline-bullets {
+        margin: 1rem 0 0;
+        padding-left: 1.25rem;
+      }
+      .pipeline-bullets li {
+        margin-bottom: 0.55rem;
+        line-height: 1.6;
+        color: var(--text);
+        font-size: 0.98rem;
+      }
+      .pipeline-bullets li strong { color: var(--text); }
+
+      .closer {
+        text-align: center;
+        padding: 2.75rem 2rem;
+        background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+        color: #fff;
+        border-radius: 14px;
+        margin-top: 1.5rem;
+      }
+      .closer h2 {
+        margin: 0 0 0.5rem;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #fff;
+      }
+      /* WCAG AA: white on accent gradient — verified ≥7:1 for all 9 campus accents */
+      .closer p {
+        margin: 0 0 1.25rem;
+        opacity: 0.95;
+        font-size: 1.05rem;
+        line-height: 1.55;
+      }
+      .closer a.cta {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background: #fff;
+        color: var(--accent);
+        font-weight: 600;
+        font-size: 1.02rem;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: transform 0.15s ease;
+      }
+      .closer a.cta:hover { transform: translateY(-1px); }
+      .closer a.cta:focus-visible {
+        outline: 3px solid #fff;
+        outline-offset: 3px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .campus-chat-link,
+        .closer a.cta { transition: none; }
+        .campus-chat-link:hover,
+        .closer a.cta:hover { transform: none; }
+      }
+
+      @media (max-width: 600px) {
+        .hiw-hero { padding: 1.75rem 1.25rem; }
+        .hiw-hero h1 { font-size: 1.7rem; }
+        .campus-links-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .hiw-section { padding: 1.5rem 1.25rem; }
+        .diagram { font-size: 0.74rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <main id="main-content" class="hiw-page" tabindex="-1">
+      <a href="/" class="hiw-back">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M12 4l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back to {{ campus.code }} chat
+      </a>
+
+      <section class="hiw-hero">
+        <p class="eyebrow">How it works</p>
+        <h1>One app, nine colleges.</h1>
+        <p class="lead">
+          What you're using is one application that quietly serves nine different colleges. Each LACCD campus has its own branded chatbot, its own voice line, and its own catalog of answers. But under the hood, it's a single backend that figures out which campus you're on from the URL and tailors everything from there.
+        </p>
+        <nav class="campus-links" aria-label="LACCD campus chatbots">
+          <p class="campus-links-label">Open a campus chatbot</p>
+          <ul class="campus-links-list" role="list">
+            {% for linked_campus in campuses %}
+            <li>
+              <a
+                class="campus-chat-link"
+                href="https://{{ linked_campus.code|lower }}.chat/"
+                aria-label="Open the {{ linked_campus.name }} chatbot"
+              >
+                <span>{{ linked_campus.nickname }}</span>
+                <span class="campus-code">{{ linked_campus.code }}</span>
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </nav>
+      </section>
+
+      <section class="hiw-section">
+        <h2>Three doorways</h2>
+        <p>
+          Students reach the assistant three ways. All three call into the same backend services, so the answers stay consistent whether you type or talk.
+        </p>
+        <div class="doorways">
+          <div class="doorway">
+            <span class="doorway-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </span>
+            <h3>Web chat</h3>
+            <p>The chat panel on the campus website.</p>
+          </div>
+          <div class="doorway">
+            <span class="doorway-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            </span>
+            <h3>Live voice agent</h3>
+            <p>Click the mic and talk to the assistant in real time.</p>
+          </div>
+          <div class="doorway">
+            <span class="doorway-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+            </span>
+            <h3>Phone</h3>
+            <p>One shared number, IVR menu routes to the right campus.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="hiw-section">
+        <h2>Where the data comes from</h2>
+        <p>
+          Behind the chat are five data sources, each chosen for what it's actually good at.
+        </p>
+        <ol class="source-list">
+          <li>
+            <span class="source-num">1</span>
+            <div>
+              <h3>Verified academic data <span class="static-tag">Maintained</span></h3>
+              <p>More than 20,000 course records across all nine colleges, including prerequisites, corequisites, advisories, GE placement, UC and CSU transferability, course renumberings, programs, and instructors. The records are maintained from official district and statewide sources.</p>
+            </div>
+          </li>
+          <li>
+            <span class="source-num">2</span>
+            <div>
+              <h3>ASSIST.org API <span class="live-tag">Live</span></h3>
+              <p>For any "does this transfer to UCLA?" question, we hit ASSIST directly so the answer reflects the current articulation agreement, not a stale snapshot.</p>
+            </div>
+          </li>
+          <li>
+            <span class="source-num">3</span>
+            <div>
+              <h3>LACCD class schedule API <span class="live-tag">Live</span></h3>
+              <p>When a student asks "what sections are open this term?" or "is there a zero-textbook-cost option?" we pull current sections in real time.</p>
+            </div>
+          </li>
+          <li>
+            <span class="source-num">4</span>
+            <div>
+              <h3>Program Mapper &amp; eLumen <span class="live-tag">Live</span></h3>
+              <p>Degree and certificate requirements, and the official course-of-record catalog.</p>
+            </div>
+          </li>
+          <li>
+            <span class="source-num">5</span>
+            <div>
+              <h3>Gemini File Search <span class="static-tag">Indexed</span></h3>
+              <p>A per-campus retrieval store holding the crawled campus website plus the catalog as markdown. Catches everything the structured sources don't &mdash; "where's the financial aid office," "what are the library hours."</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <section class="hiw-section">
+        <h2>Beyond a retrieval-only chatbot</h2>
+        <p>
+          Traditional chatbots often use retrieval-augmented generation (RAG): they search a collection of documents, retrieve a few relevant passages, and ask a language model to summarize them. That is useful for questions such as "what time does the library open?" when the answer appears clearly on one page.
+        </p>
+        <p>
+          Retrieval alone is less reliable when an answer depends on several separate records, an old and new course number, a live schedule, or a chain of prerequisites. This assistant combines RAG with <strong>verified academic facts, deterministic planning rules, and live college services</strong>, so it can answer questions that cross those boundaries without relying on the model to infer the missing pieces.
+        </p>
+        <div class="capability-examples" aria-label="Examples of verified academic facts the assistant can use together">
+          MATH 261 <span class="fact-label">requires</span> MATH 260<br>
+          STAT C1000 <span class="fact-label">satisfies</span> IGETC Area 2A<br>
+          MATH 227 <span class="fact-label">current code</span> STAT C1000 &nbsp;<em>(~2,700 renumberings)</em><br>
+          MATH 261 <span class="fact-label">transfers to</span> UC, CSU<br>
+          Computer Science AS <span class="fact-label">includes</span> MATH 261, CS 101, …
+        </div>
+        <p>
+          The language model explains the answer, but verified records and live sources supply the academic facts.
+        </p>
+
+        <h3 class="subheading">Where retrieval-only chatbots fall short</h3>
+
+        <div class="compare-grid">
+          <div class="compare-cell rag">
+            <h3>Typical RAG chatbot</h3>
+            <p><strong>Admissions &amp; financial aid:</strong> "How do I apply?" "What aid forms do I need?" Retrieves and summarizes the official instructions, deadlines, and office information.</p>
+          </div>
+          <div class="compare-cell enhanced">
+            <h3>This assistant</h3>
+            <p><strong>Enrollment planning:</strong> "I need 12 units. Which offered courses have no listed prerequisites, and which have zero-cost materials?" Combines the published term schedule, requirements, meeting times, and cost indicators. It supports planning but does not determine aid eligibility or guarantee an open seat.</p>
+          </div>
+
+          <div class="compare-cell rag">
+            <h3>Typical RAG chatbot</h3>
+            <p>"What's the prereq chain to Calculus II?" → retrieves the Calculus II catalog page and usually stops at the immediate prerequisite.</p>
+          </div>
+          <div class="compare-cell enhanced">
+            <h3>This assistant</h3>
+            <p>Traces the complete verified sequence: Calculus II → Calculus I → Trigonometry → Algebra → Pre-Algebra.</p>
+          </div>
+
+          <div class="compare-cell rag">
+            <h3>Typical RAG chatbot</h3>
+            <p>"Which IGETC Area 2A courses are offered this spring at Mission?" → no single document contains both the GE designation and current section availability.</p>
+          </div>
+          <div class="compare-cell enhanced">
+            <h3>This assistant</h3>
+            <p>Combines verified GE eligibility with the live schedule and campus filter to return the actual offered sections.</p>
+          </div>
+
+          <div class="compare-cell rag">
+            <h3>Typical RAG chatbot</h3>
+            <p>"Is MATH 227 transferable?" → the catalog still lists it under the old code. The renumbered version (STAT C1000) is in a different document. They don't share keywords; RAG sees them as unrelated.</p>
+          </div>
+          <div class="compare-cell enhanced">
+            <h3>This assistant</h3>
+            <p>Resolves the historical course number to its current code before checking transferability, so either version can produce the right result.</p>
+          </div>
+
+          <div class="compare-cell rag">
+            <h3>Typical RAG chatbot</h3>
+            <p>"Is BIOLOGY 005 UC-transferable?" → retrieves nearby text and asks the model to infer whether it applies to that exact course.</p>
+          </div>
+          <div class="compare-cell enhanced">
+            <h3>This assistant</h3>
+            <p>Checks the course's verified transfer status directly and uses the model only to explain the result.</p>
+          </div>
+        </div>
+
+        <h3 class="subheading">How verified academic intelligence improves every source</h3>
+        <p>
+          The assistant does more than retrieve text. It coordinates specialized academic sources so each one contributes what it is best suited to answer:
+        </p>
+        <ul class="lift-list">
+          <li>
+            <strong>ASSIST.org articulation</strong>
+            If a student asks about MATH 227 but the current agreement lists STAT C1000, the assistant resolves the historical code before checking the live agreement.
+          </li>
+          <li>
+            <strong>Live class schedule</strong>
+            Current sections can be presented with verified GE, transferability, and prerequisite details instead of only a time and room.
+          </li>
+          <li>
+            <strong>Program Mapper &amp; eLumen</strong>
+            A degree's required-course list becomes a usable plan that accounts for availability, transfer status, and prerequisite order.
+          </li>
+          <li>
+            <strong>Gemini File Search (RAG)</strong>
+            When a retrieved campus page mentions a course, the assistant can cross-check the current code, transfer status, and GE placement before answering.
+          </li>
+          <li>
+            <strong>Course sequencing</strong>
+            The pace-track planner uses verified prerequisites and unit limits to build term-by-term sequences without violating course dependencies.
+          </li>
+        </ul>
+
+        <p style="margin-top: 1.5rem;">
+          In short: RAG is strong at finding and summarizing a relevant passage. This assistant can also reconcile course changes, check authoritative records, combine live and verified data, and follow academic dependencies. That is why a question like <em>"I took MATH 227 last year — does that count toward my UCLA transfer for psychology?"</em> can be handled as one connected academic question instead of several disconnected searches.
+        </p>
+      </section>
+
+      <section class="hiw-section">
+        <h2>What's AI, what's deterministic, and how we prevent hallucinations</h2>
+        <p>
+          AI shows up in exactly two places, both at the edges of the system. Everything load-bearing &mdash; the facts, the routing, the resolution, the citations &mdash; is deterministic code reading from authoritative sources. That separation is the design, and it's what makes the answers trustworthy.
+        </p>
+
+        <div class="split-grid">
+          <div class="split-cell deterministic">
+            <h3><span class="badge" aria-hidden="true"></span> Deterministic (no AI)</h3>
+            <ul>
+              <li><strong>Intent classification</strong> &mdash; keyword patterns route the question; the model doesn't pick its own tools.</li>
+              <li><strong>Course code resolution</strong> &mdash; verified renumbering records map historical course codes to their current equivalents.</li>
+              <li><strong>Academic fact lookups</strong> &mdash; prerequisites, GE placement, and transfer status are checked against maintained records.</li>
+              <li><strong>Live API calls</strong> &mdash; ASSIST, class schedule, Program Mapper, eLumen return whatever the source returned.</li>
+              <li><strong>Course sequencing</strong> &mdash; pure algorithms apply prerequisite order and pace math to verified academic data.</li>
+              <li><strong>Citations</strong> &mdash; URLs and source IDs come from the handlers, never from the model.</li>
+            </ul>
+          </div>
+          <div class="split-cell ai">
+            <h3><span class="badge" aria-hidden="true"></span> AI (Gemini)</h3>
+            <ul>
+              <li><strong>Composition</strong> &mdash; takes the structured context the handlers returned and writes the final natural-language answer.</li>
+              <li><strong>RAG fallback</strong> &mdash; for unstructured questions ("library hours," "where's financial aid"), retrieves campus-website snippets and answers from them.</li>
+              <li><strong>Voice</strong> &mdash; speech-to-speech via Gemini Live, calling the same deterministic handlers as chat for facts.</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="subheading">Five mechanisms that keep the answers grounded</h3>
+        <ol class="mech-list">
+          <li>
+            <strong>Ground first, generate second.</strong>
+            The deterministic handlers run <em>before</em> Gemini sees the question. The model writes prose over already-correct facts &mdash; it isn't asked to recall from training data. When a handler returns nothing, the prompt says so explicitly and the model is instructed to admit it doesn't know.
+          </li>
+          <li>
+            <strong>Verified academic facts check RAG results.</strong>
+            When a website snippet mentions a course code, the orchestrator adds maintained facts about that course (current name, transferability, GE area) to the prompt as authoritative. A stale catalog page that says "MATH 227" can be corrected to "STAT C1000" inline.
+          </li>
+          <li>
+            <strong>Routing picks the authoritative source.</strong>
+            ASSIST.org articulation runs <em>before</em> the assistant's maintained academic records on institution-specific transfer questions, because the live agreement is the authoritative source. Each question type is matched to the source best suited to answer it.
+          </li>
+          <li>
+            <strong>Citations trace back to real documents.</strong>
+            The model doesn't invent URLs. Every cited link came from a handler that retrieved a real document or source record. If you click a citation, it goes to the actual source the system used.
+          </li>
+          <li>
+            <strong>Failure mode is "I don't know," not improvisation.</strong>
+            The system prompt and the handler-empty path both push the model toward declining gracefully. Transient model errors trigger a clarifying question instead of a guess. There's also an OpenRouter tier-2 model as a budget fallback &mdash; same prompting, same grounding, just a different generator.
+          </li>
+        </ol>
+
+        <div class="honest-callout">
+          <h3>The honest edges</h3>
+          <p style="margin: 0;">A few places where hallucination risk isn't fully eliminated, because no system can promise zero:</p>
+          <ul>
+            <li>The RAG fallback is still RAG. If a campus website is stale, the answer to a website-only question can be stale.</li>
+            <li>Long compositions can drift on edge details when summarizing many items at once.</li>
+            <li>Out-of-scope questions ("should I major in nursing?") are advice, not retrieval &mdash; grounding can't apply because there's nothing to ground in.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="hiw-section">
+        <h2>How a question flows through the system</h2>
+        <p>
+          When a question comes in, an orchestrator reads it, classifies the intent, and routes to the right service. The service returns structured context. Gemini composes the answer, cites the source, and hands it back.
+        </p>
+
+<div class="diagram" role="img" aria-label="Diagram of request flow from student through the FastAPI backend to one of five data handlers, then back to the student.">       Student
+         │
+   ┌─────┼─────────────────────────┐
+   │     │                         │
+ Web    Voice button            Shared phone
+ chat   (browser → LiveKit)     (IVR → LiveKit)
+   │     │                         │
+   └─────┴───────────┬─────────────┘
+                     ▼
+            FastAPI backend
+                     │
+        Host header → CampusConfig
+                     │
+                     ▼
+            Chat orchestrator
+        ┌─── intent classifier ───┐
+        ▼                         ▼
+ ┌───────────────────────────────────────┐
+ │   • Verified academic data            │
+ │   • ASSIST.org live API               │
+ │   • LACCD live class schedule API     │
+ │   • Program Mapper API                │
+ │   • eLumen course-of-record API       │
+ │   • Gemini File Search (per-campus)   │
+ └───────────────────────────────────────┘
+                     │
+            Structured context
+                     ▼
+              Gemini composes
+            answer + citations
+                     │
+                     ▼
+                  Student</div>
+
+        <ul class="pipeline-bullets">
+          <li><strong>Entry layer.</strong> Web panel, voice agent, and phone IVR all hand off to the same backend. Voice runs in a separate process but calls the same services as chat &mdash; a question answered by typing matches the same question answered by speaking.</li>
+          <li><strong>Campus resolution.</strong> The URL the student arrived on (e.g. <code>{{ campus.subdomain }}.johnnyrobot.ai</code>) maps to a campus config object that carries colors, sample questions, system prompt, retrieval store, voice agent, and phone number. Everything downstream reads from that single object.</li>
+          <li><strong>Intent classification.</strong> The orchestrator scans the question for transfer, prereq, schedule, program, articulation, sequence, instructor, and general-info patterns &mdash; then picks one or more handlers.</li>
+          <li><strong>Specialized handlers.</strong> Each of the five data sources has its own service. They return structured context (course rows, articulation tables, live section listings, retrieval snippets) rather than free text.</li>
+          <li><strong>Composition.</strong> Gemini takes the structured context plus the campus's system prompt and writes the final answer with inline citations.</li>
+          <li><strong>Fallback.</strong> If the day's Gemini budget is exhausted, an OpenRouter tier-2 model takes over so the chat stays up.</li>
+        </ul>
+      </section>
+
+      <section class="hiw-section">
+        <h2>How the data stays current</h2>
+        <p>
+          Structured academic records and campus documents follow separate update paths. This keeps exact course facts deterministic while allowing broad campus information to remain searchable.
+        </p>
+
+<div class="diagram" role="img" aria-label="Diagram showing one path that validates and normalizes official academic records and another that indexes campus documents for retrieval.">ASSIST data extracts ─┐
+Campus catalog PDFs ──┤
+eLumen records ───────┼──►  Validate + normalize  ──►  Verified academic data
+CCN renumbering CSV ──┤
+Programs / instructors ┘
+
+Campus website crawls ─┐
+Catalog markdown ──────┼──►  Retrieval indexing  ──►  Per-campus RAG store
+Addendums ─────────────┘</div>
+
+        <ul class="pipeline-bullets">
+          <li><strong>ASSIST.org extracts</strong> &mdash; official articulation data refreshed on the cadence ASSIST publishes.</li>
+          <li><strong>Catalog PDFs</strong> &mdash; each campus's annual catalog, parsed and checked against maintained academic records.</li>
+          <li><strong>eLumen scrape</strong> &mdash; official course-of-record details: units, descriptions, hours.</li>
+          <li><strong>CCN renumbering map</strong> &mdash; California's statewide course renumbering, so a question about an old course number resolves to the new one.</li>
+          <li><strong>Website crawls + catalog markdown</strong> &mdash; feed the per-campus retrieval store; this is what answers everything that isn't in the structured sources.</li>
+        </ul>
+        <p style="margin-top: 1rem;">
+          The live APIs &mdash; ASSIST, LACCD class schedule, Program Mapper, eLumen &mdash; are queried on demand at chat time, never cached past their freshness window, so transfer agreements and section availability always reflect the current state.
+        </p>
+      </section>
+
+      <section class="closer">
+        <h2>Nine schools, one codebase.</h2>
+        <p>Answers grounded in live institutional data instead of guesswork.</p>
+        <a href="/" class="cta">Try the {{ campus.code }} assistant →</a>
+      </section>
+    </main>
+  </body>
+</html>

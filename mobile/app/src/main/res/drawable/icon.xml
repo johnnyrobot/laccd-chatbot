@@ -1,0 +1,30 @@
+<!--
+ LACCD Assistant — launcher icon foreground & monochrome layer.
+
+ Same 3x3 dot constellation as drawable/logo.xml, scaled into the
+ adaptive-icon safe zone (centered ~24x24 region of the 108-viewport).
+ Used by mipmap-anydpi-v26/ic_launcher.xml as both foreground and
+ monochrome — themed-icon mode (Android 13+) tints the silhouette to
+ match the user's wallpaper.
+
+ Color is a deep editorial navy, sized to read against the white adaptive
+ background without competing with campus brand colors elsewhere in-app.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+  <!-- top row -->
+  <path android:fillColor="#FF0F2A4A" android:pathData="M38,38 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
+  <path android:fillColor="#FF0F2A4A" android:pathData="M54,38 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
+  <path android:fillColor="#FF0F2A4A" android:pathData="M70,38 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
+  <!-- middle row -->
+  <path android:fillColor="#FF0F2A4A" android:pathData="M38,54 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
+  <path android:fillColor="#FF0F2A4A" android:pathData="M54,54 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
+  <path android:fillColor="#FF0F2A4A" android:pathData="M70,54 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
+  <!-- bottom row -->
+  <path android:fillColor="#FF0F2A4A" android:pathData="M38,70 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
+  <path android:fillColor="#FF0F2A4A" android:pathData="M54,70 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
+  <path android:fillColor="#FF0F2A4A" android:pathData="M70,70 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 z" />
+</vector>

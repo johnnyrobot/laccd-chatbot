@@ -1,0 +1,303 @@
+/*
+ * Copyright 2025 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.laccd.chatbot.ui.llmchat
+
+import androidx.hilt.navigation.compose.hiltViewModel
+
+import android.graphics.Bitmap
+import android.os.Bundle
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.laccd.chatbot.GalleryEvent
+import com.laccd.chatbot.R
+import com.laccd.chatbot.data.BuiltInTaskId
+import com.laccd.chatbot.data.Model
+import com.laccd.chatbot.data.ModelCapability
+import com.laccd.chatbot.data.Task
+import com.laccd.chatbot.firebaseAnalytics
+import com.laccd.chatbot.ui.common.chat.ChatMessageAudioClip
+import com.laccd.chatbot.ui.common.chat.ChatMessageImage
+import com.laccd.chatbot.ui.common.chat.ChatMessageText
+import com.laccd.chatbot.ui.common.chat.ChatView
+import com.laccd.chatbot.ui.common.chat.SendMessageTrigger
+import com.laccd.chatbot.ui.modelmanager.ModelManagerViewModel
+import com.laccd.chatbot.ui.theme.emptyStateContent
+import com.laccd.chatbot.ui.theme.emptyStateTitle
+import com.google.ai.edge.litertlm.Contents
+
+@Composable
+fun LlmChatScreen(
+  modelManagerViewModel: ModelManagerViewModel,
+  navigateUp: () -> Unit,
+  modifier: Modifier = Modifier,
+  taskId: String = BuiltInTaskId.LLM_CHAT,
+  onFirstToken: (Model) -> Unit = {},
+  onGenerateResponseDone: (Model) -> Unit = {},
+  onResetSessionClickedOverride: ((Task, Model) -> Unit)? = null,
+  composableBelowMessageList: @Composable (Model) -> Unit = {},
+  viewModel: LlmChatViewModel = hiltViewModel(),
+  allowEditingSystemPrompt: Boolean = false,
+  curSystemPrompt: String = "",
+  onSystemPromptChanged: (String) -> Unit = {},
+  emptyStateComposable: @Composable (Model) -> Unit = {},
+  sendMessageTrigger: SendMessageTrigger? = null,
+  showImagePicker: Boolean = false,
+  showAudioPicker: Boolean = false,
+) {
+  ChatViewWrapper(
+    viewModel = viewModel,
+    modelManagerViewModel = modelManagerViewModel,
+    taskId = taskId,
+    navigateUp = navigateUp,
+    modifier = modifier,
+    onFirstToken = onFirstToken,
+    onGenerateResponseDone = onGenerateResponseDone,
+    onResetSessionClickedOverride = onResetSessionClickedOverride,
+    composableBelowMessageList = composableBelowMessageList,
+    allowEditingSystemPrompt = allowEditingSystemPrompt,
+    curSystemPrompt = curSystemPrompt,
+    onSystemPromptChanged = onSystemPromptChanged,
+    emptyStateComposable = emptyStateComposable,
+    sendMessageTrigger = sendMessageTrigger,
+    showImagePicker = showImagePicker,
+    showAudioPicker = showAudioPicker,
+  )
+}
+
+@Composable
+fun LlmAskImageScreen(
+  modelManagerViewModel: ModelManagerViewModel,
+  navigateUp: () -> Unit,
+  modifier: Modifier = Modifier,
+  viewModel: LlmAskImageViewModel = hiltViewModel(),
+  allowEditingSystemPrompt: Boolean = false,
+  curSystemPrompt: String = "",
+  onSystemPromptChanged: (String) -> Unit = {},
+) {
+  ChatViewWrapper(
+    viewModel = viewModel,
+    modelManagerViewModel = modelManagerViewModel,
+    taskId = BuiltInTaskId.LLM_ASK_IMAGE,
+    navigateUp = navigateUp,
+    modifier = modifier,
+    allowEditingSystemPrompt = allowEditingSystemPrompt,
+    curSystemPrompt = curSystemPrompt,
+    onSystemPromptChanged = onSystemPromptChanged,
+    showImagePicker = true,
+    showAudioPicker = false,
+    emptyStateComposable = { model ->
+      Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+          modifier =
+            Modifier.align(Alignment.Center).padding(horizontal = 48.dp).padding(bottom = 48.dp),
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+          Text(stringResource(R.string.askimage_emptystate_title), style = emptyStateTitle)
+          Text(
+            stringResource(R.string.askimage_emptystate_content),
+            style = emptyStateContent,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+          )
+        }
+      }
+    },
+  )
+}
+
+@Composable
+fun LlmAskAudioScreen(
+  modelManagerViewModel: ModelManagerViewModel,
+  navigateUp: () -> Unit,
+  modifier: Modifier = Modifier,
+  viewModel: LlmAskAudioViewModel = hiltViewModel(),
+  allowEditingSystemPrompt: Boolean = false,
+  curSystemPrompt: String = "",
+  onSystemPromptChanged: (String) -> Unit = {},
+) {
+  ChatViewWrapper(
+    viewModel = viewModel,
+    modelManagerViewModel = modelManagerViewModel,
+    taskId = BuiltInTaskId.LLM_ASK_AUDIO,
+    navigateUp = navigateUp,
+    modifier = modifier,
+    allowEditingSystemPrompt = allowEditingSystemPrompt,
+    curSystemPrompt = curSystemPrompt,
+    onSystemPromptChanged = onSystemPromptChanged,
+    showImagePicker = false,
+    showAudioPicker = true,
+    emptyStateComposable = {
+      Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+          modifier =
+            Modifier.align(Alignment.Center).padding(horizontal = 48.dp).padding(bottom = 48.dp),
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+          Text(stringResource(R.string.askaudio_emptystate_title), style = emptyStateTitle)
+          Text(
+            stringResource(R.string.askaudio_emptystate_content),
+            style = emptyStateContent,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+          )
+        }
+      }
+    },
+  )
+}
+
+@Composable
+fun ChatViewWrapper(
+  viewModel: LlmChatViewModelBase,
+  modelManagerViewModel: ModelManagerViewModel,
+  taskId: String,
+  navigateUp: () -> Unit,
+  modifier: Modifier = Modifier,
+  onFirstToken: (Model) -> Unit = {},
+  onGenerateResponseDone: (Model) -> Unit = {},
+  onResetSessionClickedOverride: ((Task, Model) -> Unit)? = null,
+  composableBelowMessageList: @Composable (Model) -> Unit = {},
+  emptyStateComposable: @Composable (Model) -> Unit = {},
+  allowEditingSystemPrompt: Boolean = false,
+  curSystemPrompt: String = "",
+  onSystemPromptChanged: (String) -> Unit = {},
+  sendMessageTrigger: SendMessageTrigger? = null,
+  showImagePicker: Boolean = false,
+  showAudioPicker: Boolean = false,
+) {
+  val context = LocalContext.current
+  val task = modelManagerViewModel.getTaskById(id = taskId)!!
+
+  ChatView(
+    task = task,
+    viewModel = viewModel,
+    modelManagerViewModel = modelManagerViewModel,
+    onSendMessage = { model, messages ->
+      for (message in messages) {
+        viewModel.addMessage(model = model, message = message)
+      }
+
+      var text = ""
+      val images: MutableList<Bitmap> = mutableListOf()
+      val audioMessages: MutableList<ChatMessageAudioClip> = mutableListOf()
+      var chatMessageText: ChatMessageText? = null
+      for (message in messages) {
+        if (message is ChatMessageText) {
+          chatMessageText = message
+          text = message.content
+        } else if (message is ChatMessageImage) {
+          images.addAll(message.bitmaps)
+        } else if (message is ChatMessageAudioClip) {
+          audioMessages.add(message)
+        }
+      }
+      if ((text.isNotEmpty() && chatMessageText != null) || audioMessages.isNotEmpty()) {
+        if (text.isNotEmpty()) {
+          modelManagerViewModel.addTextInputHistory(text)
+        }
+        viewModel.generateResponse(
+          model = model,
+          input = text,
+          images = images,
+          audioMessages = audioMessages,
+          onFirstToken = onFirstToken,
+          onDone = { onGenerateResponseDone(model) },
+          onError = { errorMessage ->
+            viewModel.handleError(
+              context = context,
+              task = task,
+              model = model,
+              errorMessage = errorMessage,
+              modelManagerViewModel = modelManagerViewModel,
+            )
+          },
+          allowThinking = task.allowCapability(ModelCapability.LLM_THINKING, model),
+        )
+
+        firebaseAnalytics?.logEvent(
+          GalleryEvent.GENERATE_ACTION.id,
+          Bundle().apply {
+            putString("capability_name", task.id)
+            putString("model_id", model.name)
+            putBoolean("has_image", images.isNotEmpty())
+            putInt("image_count", images.size)
+            putBoolean("has_audio", audioMessages.isNotEmpty())
+            putInt("audio_count", audioMessages.size)
+          },
+        )
+      }
+    },
+    onRunAgainClicked = { model, message ->
+      if (message is ChatMessageText) {
+        viewModel.runAgain(
+          model = model,
+          message = message,
+          onError = { errorMessage ->
+            viewModel.handleError(
+              context = context,
+              task = task,
+              model = model,
+              errorMessage = errorMessage,
+              modelManagerViewModel = modelManagerViewModel,
+            )
+          },
+          allowThinking = task.allowCapability(ModelCapability.LLM_THINKING, model),
+        )
+      }
+    },
+    onBenchmarkClicked = { _, _, _, _ -> },
+    onResetSessionClicked = { model ->
+      if (onResetSessionClickedOverride != null) {
+        onResetSessionClickedOverride(task, model)
+      } else {
+        viewModel.resetSession(
+          task = task,
+          model = model,
+          systemInstruction = Contents.of(curSystemPrompt),
+          supportImage = showImagePicker,
+          supportAudio = showAudioPicker,
+        )
+      }
+    },
+    showStopButtonInInputWhenInProgress = true,
+    onStopButtonClicked = { model -> viewModel.stopResponse(model = model) },
+    navigateUp = navigateUp,
+    modifier = modifier,
+    composableBelowMessageList = composableBelowMessageList,
+    showImagePicker = showImagePicker,
+    emptyStateComposable = emptyStateComposable,
+    allowEditingSystemPrompt = allowEditingSystemPrompt,
+    curSystemPrompt = curSystemPrompt,
+    onSystemPromptChanged = onSystemPromptChanged,
+    sendMessageTrigger = sendMessageTrigger,
+    showAudioPicker = showAudioPicker,
+  )
+}

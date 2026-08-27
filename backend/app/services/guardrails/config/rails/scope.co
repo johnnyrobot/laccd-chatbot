@@ -1,0 +1,303 @@
+# ---------- In-scope user intents (exemplars are embedding anchors) ----------
+# NOTE: intent names must not contain the reserved Colang keyword "or"; the
+# 1.0 parser treats it as a logical operator inside flow references. Prefer
+# short neutral names (e.g. "ask programs", not "ask program or degree").
+#
+# Matching is embeddings-only (config.yml): the user turn is embedded once and
+# assigned to the nearest exemplar's intent if it clears the similarity
+# threshold, else the fallback intent ("out of scope"). Exemplars are therefore
+# nearest-neighbor anchors — breadth across real phrasings matters more than
+# volume. These mirror the advertised student questions in frontend/index.html
+# and the router capabilities in ChatOrchestrator.
+
+define user ask programs
+  "what degrees do you offer"
+  "tell me about the nursing program"
+  "which certificates can I earn"
+  "what are the requirements for the business major"
+  "what are the requirements for the computer science degree"
+  "tell me about the sociology degree for transfer"
+  "does the college have a paralegal certificate"
+  "what programs are available at this campus"
+  "tell me about the biotechnology certificate"
+  "do you have an automotive technology program"
+  "what career options does a nursing degree give me"
+  "what certifications can I get here"
+  "tell me about the business administration transfer degree"
+  "do any laccd campuses offer a film program"
+  "which colleges in the district have an engineering degree"
+
+define user ask schedule
+  "what classes are offered this spring"
+  "when is math 125 offered"
+  "is there an evening section of english 101"
+  "what math classes are available this spring"
+  "show me the english 102 schedule"
+  "are there any stat sections this spring"
+  "what biology classes are offered this term"
+  "is chem 101 offered this spring"
+  "what sections of sociology are available this summer"
+  "are there fall english classes"
+  "what classes were available last fall"
+  "show me spring chemistry sections"
+  "is anatomy offered this spring"
+  "what philosophy classes are available"
+  "are there any asl sign language classes"
+  "what classes are available in winter"
+  "is physics offered at any laccd campus this spring"
+  "where is economics offered across all laccd campuses"
+  "which laccd campuses offer music classes"
+  "are there nursing classes at any campus in the district"
+  "which laccd campus has the most math sections"
+
+define user ask transfer
+  "how do I transfer to UCLA"
+  "does math 265 transfer to a CSU"
+  "what courses articulate to UC Berkeley"
+  "is history 11 transferable"
+  "is stat c1000 transferable to uc and csu"
+  "is chem c211 uc transferable"
+  "how do I transfer from here to a csu or uc"
+  "what gpa do I need to transfer"
+  "does this campus have a transfer program to ucla"
+
+define user ask requisites
+  "what are the prerequisites for chemistry 101"
+  "do I need a prereq for calculus"
+  "what GE area does english 101 satisfy"
+  "is bio 3 a corequisite"
+  "what are the prerequisites for math 261"
+  "what do I need to take before english c1000"
+  "what ge areas does english c1000 satisfy"
+  "what courses fulfill igetc area 2a math"
+  "what courses satisfy the csu-ge written communication requirement"
+  "what cal-getc areas does biology c100 satisfy"
+  "what igetc area does this course satisfy"
+
+define user ask course info
+  "is math 227 the same as stat c1000"
+  "what happened to math 265 was it renumbered"
+  "show me all course renumberings"
+  "was this course renumbered"
+  "what is the new course number for math 265"
+  "did this class get a new number"
+  "what is english c1000 about"
+
+define user ask instructor
+  "who teaches math 261"
+  "who teaches psychology 1"
+  "what courses does professor smith teach"
+  "who is the instructor for english 101"
+  "which professor teaches chemistry"
+  "what classes does professor garcia teach"
+
+define user ask course sequence
+  "what order should I take my classes"
+  "map out my courses to finish in two years"
+  "give me a semester plan for computer science"
+  "what is the course sequence for the nursing program"
+  "show me the course plan for architecture"
+  "what order should I take nursing courses"
+  "show me the prerequisite chain for the accounting program"
+  "show me the course sequence for cyber security"
+  "which courses should I take first"
+
+define user ask ztc
+  "what classes have zero textbook cost"
+  "are there any ztc english classes"
+  "which subjects offer free textbook sections"
+  "does the campus have low cost textbook classes"
+  "are there ztc classes at other campuses"
+  "I can't afford textbooks what are my options"
+  "are there free books for my math class"
+  "which classes use free open textbooks"
+
+define user ask campus services
+  "how do I apply for financial aid"
+  "where is the admissions office"
+  "how do I contact a counselor"
+  "what are the library hours"
+  "what are the admissions requirements"
+  "does the campus have parking and how much does it cost"
+  "what tutoring services are offered"
+  "how much does it cost to attend per semester"
+  "how much is tuition"
+  "what is the address of the campus"
+  "what is the help desk phone number"
+  "how do I get my student id"
+  "does the campus offer online classes"
+  "what are the eops eligibility requirements"
+  "where is the bookstore"
+  "how do I order my transcripts"
+  "what is the dsps office and who qualifies"
+  "how do I reset my student email password"
+  "I'm a high school student can I take classes here"
+  "tell me about counseling services"
+  "what are the calworks requirements"
+  "when is the add drop deadline"
+  "what is the deadline to drop a class"
+  "what is the last day to add a class"
+  "when does registration open for next semester"
+  "how do I register for classes"
+  "how do I withdraw from a class"
+  "how do I apply for fafsa"
+  "am I eligible for a pell grant"
+  "how do I check my financial aid status"
+
+define user express greeting
+  "hi"
+  "hello"
+  "hey there"
+  "good morning"
+
+# ---------- Out-of-scope user intents ----------
+define user ask homework help
+  "solve this math problem for me"
+  "write my essay about the civil war"
+  "what is the answer to question 5"
+  "do my homework"
+  "prove this theorem for me"
+  "solve this equation for me"
+  "help me finish my lab report"
+  "what is the derivative of this function"
+  "answer these questions on my worksheet"
+  "summarize this chapter for my assignment"
+  "write a five paragraph essay for me"
+
+define user ask general knowledge
+  "what is the capital of France"
+  "who won the world series"
+  "explain quantum physics"
+  "what is the weather today"
+  "how tall is mount everest"
+  "who is the president of the united states"
+  "what year did world war 2 end"
+  "how many planets are in the solar system"
+  "what is the speed of light"
+  "tell me a fun fact"
+
+define user ask coding help
+  "write a python function for me"
+  "debug this javascript code"
+  "how do I center a div in css"
+  "write a sql query for me"
+  "fix the bug in my code"
+  "explain how recursion works in programming"
+  "what is the time complexity of this algorithm"
+  "help me write some code"
+
+define user ask creative writing
+  "write me a poem"
+  "tell me a bedtime story"
+  "write a short story for me"
+  "compose a haiku"
+  "write some song lyrics"
+  "give me a creative name for my startup"
+  "write a birthday message"
+  "draft a wedding toast"
+
+define user ask unrelated
+  "what is a good recipe for dinner"
+  "recommend a movie to watch"
+  "how do I fix a flat tire"
+  "what stocks should I invest in"
+  "plan a weekend trip for me"
+  "how do I lose weight fast"
+  "what smartphone should I buy"
+  "how do I set up a streaming account"
+
+# Canonical form used by embeddings_only_fallback_intent for unmatched input.
+define user out of scope
+  "can you help me with something unrelated"
+
+# ---------- Bot messages ----------
+define bot provide answer
+  "{{ laccd.answer }}"
+
+define bot refuse off topic
+  "I'm the {{ campus_name }} assistant, so I can only help with LACCD topics — enrollment, classes, transfer and articulation, program requirements, course planning, and campus services. I can't help with homework or general questions, but ask me anything about your college and I'll jump in."
+
+define bot greet and offer help
+  "Hi! I'm your {{ campus_name }} assistant. I can help with classes, programs, transfer, prerequisites, course planning, and campus services. What would you like to know?"
+
+# ---------- In-scope flows: delegate to the orchestrator ----------
+define flow answer program
+  user ask programs
+  $laccd = execute answer_laccd
+  bot provide answer
+
+define flow answer schedule
+  user ask schedule
+  $laccd = execute answer_laccd
+  bot provide answer
+
+define flow answer transfer
+  user ask transfer
+  $laccd = execute answer_laccd
+  bot provide answer
+
+define flow answer requisites
+  user ask requisites
+  $laccd = execute answer_laccd
+  bot provide answer
+
+define flow answer course info
+  user ask course info
+  $laccd = execute answer_laccd
+  bot provide answer
+
+define flow answer instructor
+  user ask instructor
+  $laccd = execute answer_laccd
+  bot provide answer
+
+define flow answer sequence
+  user ask course sequence
+  $laccd = execute answer_laccd
+  bot provide answer
+
+define flow answer ztc
+  user ask ztc
+  $laccd = execute answer_laccd
+  bot provide answer
+
+define flow answer services
+  user ask campus services
+  $laccd = execute answer_laccd
+  bot provide answer
+
+# ---------- Greeting flow (multi-turn: bot offers help, next turn is handled by its own flow) ----------
+define flow greeting
+  user express greeting
+  bot greet and offer help
+
+# ---------- Out-of-scope flows: refuse, never call generation ----------
+define flow refuse homework
+  user ask homework help
+  bot refuse off topic
+  stop
+
+define flow refuse general
+  user ask general knowledge
+  bot refuse off topic
+  stop
+
+define flow refuse coding
+  user ask coding help
+  bot refuse off topic
+  stop
+
+define flow refuse creative
+  user ask creative writing
+  bot refuse off topic
+  stop
+
+define flow refuse unrelated
+  user ask unrelated
+  bot refuse off topic
+  stop
+
+define flow refuse fallback
+  user out of scope
+  bot refuse off topic
+  stop

@@ -1,0 +1,50 @@
+{
+  "campuscode": "LAMC",
+  "campusname": "Los Angeles Mission College",
+  "termcode": "2268",
+  "termname": "Fall 2026",
+  "subjects": [
+    {
+      "name": "Multimedia",
+      "code": "MULTIMD",
+      "courses": [
+        {
+          "subject": "MULTIMD",
+          "catalogNbr": "100",
+          "descr": "Introduction to Multimedia",
+          "sections": [
+            {
+              "classNbr": "13191 (LEC)",
+              "dates": "08/31/26 - 12/20/26",
+              "meetings": [
+                {
+                  "days": "M W",
+                  "times": "9:00 AM - 10:25 AM",
+                  "room": "Mission-MAC 201",
+                  "instr": "Alex Rivera"
+                }
+              ],
+              "classType": ["IN-PERSON"],
+              "relsections": [
+                {
+                  "classNbr": "13192 (LAB)",
+                  "dates": "08/31/26 - 12/20/26",
+                  "meetings": [
+                    {
+                      "days": "F",
+                      "times": "9:00 AM - 11:50 AM",
+                      "room": "Mission-MAC 201",
+                      "instr": "Alex Rivera"
+                    }
+                  ],
+                  "classType": ["OER"],
+                  "relsections": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

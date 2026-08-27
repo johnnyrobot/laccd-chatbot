@@ -1,0 +1,26 @@
+<!--
+ LACCD Assistant — top bar mark.
+
+ A 3x3 dot constellation: one dot per LACCD campus. Echoes the first-run
+ campus picker (3x3 grid of monogrammed cards) and reads at 20dp without
+ detail loss. Single-color silhouette so [GalleryTopAppBar] can tint it
+ with the active campus's primary brand color via Material 3 ColorScheme.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <!-- top row -->
+  <path android:fillColor="#000000" android:pathData="M5,5 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0 z" />
+  <path android:fillColor="#000000" android:pathData="M12,5 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0 z" />
+  <path android:fillColor="#000000" android:pathData="M19,5 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0 z" />
+  <!-- middle row -->
+  <path android:fillColor="#000000" android:pathData="M5,12 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0 z" />
+  <path android:fillColor="#000000" android:pathData="M12,12 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0 z" />
+  <path android:fillColor="#000000" android:pathData="M19,12 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0 z" />
+  <!-- bottom row -->
+  <path android:fillColor="#000000" android:pathData="M5,19 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0 z" />
+  <path android:fillColor="#000000" android:pathData="M12,19 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0 z" />
+  <path android:fillColor="#000000" android:pathData="M19,19 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0 z" />
+</vector>

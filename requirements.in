@@ -1,0 +1,36 @@
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+httpx==0.28.1
+beautifulsoup4==4.13.4
+lxml==5.3.2
+python-dotenv==1.1.1
+google-genai==1.73.1
+python-multipart==0.0.20
+jinja2>=3.1
+langfuse>=2.0
+openrouter>=0.1
+pydantic==2.11.7
+neo4j>=5.0
+networkx>=3.0
+pytest==8.4.1
+crawl4ai>=0.7.4
+playwright==1.54.0
+
+# LiveKit Voice Agent
+# All livekit-agents plugins must share the same minor. The [google] extra does
+# not pin the google plugin, so pin it explicitly. 1.4.x rejects the
+# 'gemini-live-2.5-flash-native-audio' model without vertexai=True; 1.5.x
+# accepts it, so we ride 1.5.6 across the stack.
+livekit-agents[silero,turn-detector,google]==1.5.6
+livekit-plugins-google==1.5.6
+livekit-plugins-noise-cancellation~=0.2
+livekit-api~=1.0
+firecrawl-py>=1.0
+pdfplumber>=0.11
+docling>=2.91
+pycozo[embedded]>=0.7
+# Guardrail behavior and the 0.42 classifier threshold are validated against
+# these exact versions by scripts/eval_guardrails.py. Do not widen without
+# rerunning the labeled evaluation; FastEmbed pooling changes alter similarity.
+nemoguardrails==0.23.0
+fastembed==0.8.0

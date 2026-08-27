@@ -1,0 +1,26 @@
+LACCD Chatbot Mobile
+=====================
+
+This Android application is a derivative work of Google AI Edge Gallery
+(https://github.com/google-ai-edge/gallery), licensed under the Apache License,
+Version 2.0. See LICENSE for the full Apache 2.0 license text.
+
+Modifications from the upstream codebase made in this fork:
+  - Repackaged from `com.google.ai.edge.gallery` to `com.laccd.chatbot`.
+  - Removed Firebase Analytics, Firebase Cloud Messaging, FirebaseApp init, and
+    the Google Services Gradle plugin. The `firebaseAnalytics` property was
+    rewritten to a local no-op stub so existing call sites keep compiling
+    without telemetry leaving the device.
+  - Removed the Gemma 4 marketing surfaces (PromoBannerGm4, PromoScreenGm4,
+    NewReleaseNotification).
+  - Removed unmaintained optional demo surfaces and provider-authentication
+    scaffolding.
+  - Retained local model import and explicit sideloading; disabled Android
+    backup and required external release signing.
+  - Adjusted toolchain to AGP 9.2.1 / Kotlin 2.3.21 / JDK 17 / minSdk 31.
+
+Original Edge Gallery copyright lines are preserved in each file.
+
+Bundled Nunito fonts are Copyright 2014 The Nunito Project Authors and are
+licensed under the SIL Open Font License 1.1. See
+third_party_licenses/NUNITO-OFL.txt.

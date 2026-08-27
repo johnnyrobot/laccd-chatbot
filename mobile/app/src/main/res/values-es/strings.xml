@@ -1,0 +1,79 @@
+<!--
+ Copyright 2026 LACCD Chatbot contributors
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+-->
+<resources>
+  <!--
+       Spanish translations for student-facing LACCD strings only.
+       Edge Gallery's internal labels remain English (translatable="false" upstream).
+       Keys here mirror values/strings.xml; the AppLanguageProvider Composable
+       picks the locale based on the user's Settings.LanguagePreference choice.
+  -->
+
+  <!-- Drawer entries. -->
+  <string name="laccd_drawer_classes_label">Clases</string>
+  <string name="laccd_drawer_classes_description">Planificador de clases solo en este dispositivo</string>
+  <string name="laccd_drawer_profile_label">Perfil</string>
+  <string name="laccd_drawer_profile_description">Identificación y correo del estudiante — guardado solo en este dispositivo</string>
+
+  <!-- Profile screen. -->
+  <string name="laccd_profile_title">Mi perfil</string>
+  <string name="laccd_profile_intro">Toca un chip en el chat para insertar estos datos en tu mensaje. Útil cuando quieres que el asistente te identifique por ID o correo sin tener que escribirlo cada vez.</string>
+  <string name="laccd_profile_privacy">Guardado solo en este dispositivo. Nunca se envía por la red — solo se usa al inyectarlo en el aviso (prompt) local.</string>
+  <string name="laccd_profile_student_id_label">Identificación de estudiante</string>
+  <string name="laccd_profile_student_id_placeholder">ej., 881234567</string>
+  <string name="laccd_profile_email_label">Correo del estudiante</string>
+  <string name="laccd_profile_email_placeholder">ej., nombre@laccd.edu</string>
+  <string name="laccd_profile_save">Guardar</string>
+  <string name="laccd_profile_clear">Borrar</string>
+
+  <!-- Class planner. -->
+  <string name="laccd_classes_title">Mis clases</string>
+  <string name="laccd_classes_search_hint">Buscar clases</string>
+  <string name="laccd_classes_empty">Aún no tienes clases. Toca + para agregar la primera.</string>
+  <string name="laccd_classes_no_results">Ninguna clase coincide con tu búsqueda.</string>
+  <string name="laccd_classes_add">Agregar clase</string>
+  <string name="laccd_classes_export">Exportar a archivo</string>
+  <string name="laccd_classes_import">Importar desde archivo</string>
+  <string name="laccd_classes_export_ok">Planificador exportado.</string>
+  <string name="laccd_classes_import_ok">Se importaron %1$d clases.</string>
+  <string name="laccd_classes_import_fail">No se pudo leer el archivo.</string>
+  <string name="laccd_classes_move_up">Mover arriba</string>
+  <string name="laccd_classes_move_down">Mover abajo</string>
+  <string name="laccd_classes_edit">Editar</string>
+  <string name="laccd_classes_delete">Eliminar</string>
+  <string name="laccd_classes_delete_title">¿Eliminar clase?</string>
+  <string name="laccd_classes_delete_body">Esto quitará %1$s de tu planificador.</string>
+  <string name="laccd_classes_save">Guardar</string>
+  <string name="laccd_classes_cancel">Cancelar</string>
+  <string name="laccd_classes_dialog_add_title">Agregar clase</string>
+  <string name="laccd_classes_dialog_edit_title">Editar clase</string>
+  <string name="laccd_classes_field_name">Nombre de la clase</string>
+  <string name="laccd_classes_field_section">Sección</string>
+  <string name="laccd_classes_field_days_times">Días y horarios</string>
+  <string name="laccd_classes_field_location">Ubicación</string>
+  <string name="laccd_classes_field_notes">Notas</string>
+
+  <!-- Settings language toggle. -->
+  <string name="laccd_settings_language_title">Idioma</string>
+  <string name="laccd_settings_language_auto">Sistema</string>
+  <string name="laccd_settings_language_en">Inglés</string>
+  <string name="laccd_settings_language_es">Español</string>
+
+  <!-- Chat composer profile chips. -->
+  <string name="laccd_chat_chip_label_id">Insertar ID de estudiante</string>
+  <string name="laccd_chat_chip_label_email">Insertar correo</string>
+  <string name="laccd_chat_chip_insert_id">[mi ID de estudiante: %1$s]</string>
+  <string name="laccd_chat_chip_insert_email">[mi correo: %1$s]</string>
+
+  <!-- campus picker + settings campus row. -->
+  <string name="laccd_campus_picker_title">Elige tu campus</string>
+  <string name="laccd_campus_picker_subtitle">Toca una escuela para empezar. Puedes cambiarla cuando quieras desde Configuración.</string>
+  <string name="laccd_settings_campus_title">Campus</string>
+  <string name="laccd_settings_campus_switch">Cambiar</string>
+</resources>
