@@ -2865,41 +2865,57 @@ class ChatOrchestrator:
             modality=("in_person" if in_person else "online") if in_person != online else None,
         )
 
-    # A building named in capitals ("AMP", "CMS", "B3"), or any case before the
-    # word "building". Lower-case words are not buildings on their own: EL, FIELD,
-    # MATH and ROOM are all building codes somewhere in the district.
-    _CAPS_TOKEN_RE = re.compile(r"\b[A-Z][A-Z0-9/]*[A-Z0-9]\b")
+    # How a building is named:
+    #   - any case before the word "building" ("the chem building");
+    #   - in capitals, 3+ characters or with a digit ("AMP", "CMS", "B3");
+    #   - a 1-2 letter code in capitals right after "in"/"at" ("in FH", "at CC").
+    # Lower-case words are not buildings on their own: EL, FIELD, MATH and ROOM
+    # are all building codes somewhere in the district. Measured on Fall 2026,
+    # without the third rule LACC's main halls (FH, DH, JH, CC) never matched.
     _NAMED_BUILDING_RE = re.compile(r"\b([A-Za-z0-9/]+)\s+(?:building|bldg)\b", re.IGNORECASE)
+    _CAPS_TOKEN_RE = re.compile(r"\b[A-Z][A-Z0-9/]*[A-Z0-9]\b")
+    _SHORT_CODE_AFTER_IN_RE = re.compile(r"\b(?i:in|at)\s+(?:(?i:the)\s+)?([A-Z]{1,2})\b")
     _NEVER_BUILDINGS = set(CAMPUS_NAMES) | {"LACCD", "LACCC"}
+    # Building codes that are usually something else. LA is a building at City
+    # and East but far more often "Los Angeles"; only "the LA building" counts.
+    _AMBIGUOUS_CODES = {"LA", "AM", "PM"}
 
     async def _detect_building(self, texts: list[str], campus_code: str, term: str) -> str | None:
         """The campus building these texts name, if any.
 
-        Only a code that really appears in this term's room list counts, and a
-        subject code never does — ART is a subject everywhere and a building at
-        Valley and Pierce, and the subject reading is the one students mean.
+        Only a code that really appears in this term's room list counts. A code
+        that is also a subject (ART is a subject everywhere and a building at
+        Valley and Pierce) is read as the subject unless the student says
+        "building" — "ART classes" means Art, "the ART building" means the place.
         """
-        candidates: list[str] = []
+        named: list[str] = []
+        loose: list[str] = []
         for text in texts:
-            candidates += [token.upper() for token in self._NAMED_BUILDING_RE.findall(text)]
-            candidates += [
+            named += [token.upper() for token in self._NAMED_BUILDING_RE.findall(text)]
+            loose += [
                 token for token in self._CAPS_TOKEN_RE.findall(text)
                 if len(token) >= 3 or any(ch.isdigit() for ch in token)
             ]
-        candidates = [c for c in dict.fromkeys(candidates) if c not in self._NEVER_BUILDINGS]
-        if not candidates:
+            loose += self._SHORT_CODE_AFTER_IN_RE.findall(text)
+        named = [c for c in dict.fromkeys(named) if c not in self._NEVER_BUILDINGS]
+        loose = [
+            c for c in dict.fromkeys(loose)
+            if c not in self._NEVER_BUILDINGS and c not in self._AMBIGUOUS_CODES and c not in named
+        ]
+        if not named and not loose:
             return None
         try:
-            subjects = await get_subjects(campus_code, term)
-            subject_codes = {str(s.get("code", "")).upper() for s in subjects}
-            candidates = [c for c in candidates if c not in subject_codes]
-            if not candidates:
+            if loose:
+                subjects = await get_subjects(campus_code, term)
+                subject_codes = {str(s.get("code", "")).upper() for s in subjects}
+                loose = [c for c in loose if c not in subject_codes]
+            if not named and not loose:
                 return None
             buildings = building_codes(await get_class_listing(campus_code, term))
         except Exception:
             logger.warning("Building detection failed; searching without a building", exc_info=True)
             return None
-        return next((c for c in candidates if c in buildings), None)
+        return next((c for c in [*named, *loose] if c in buildings), None)
 
     @observe(name="chat.ztc_query")
     async def _handle_ztc_query(self, message: str, campus_code: str, lang: str = "en") -> ChatResponse:
