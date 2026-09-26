@@ -66,7 +66,7 @@ _CLIENT_LOG_HMAC_KEY = (
     os.getenv("CLIENT_LOG_HMAC_KEY", "").encode("utf-8") or secrets.token_bytes(32)
 )
 
-CACHE_VERSION = "79"
+CACHE_VERSION = "80"
 CRAWLER_DIRECTIVES = "noindex, nofollow, noarchive, nosnippet"
 PUBLIC_CAMPUS_ORDER = (
     "LAMC",
