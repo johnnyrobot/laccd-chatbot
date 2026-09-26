@@ -1,0 +1,1808 @@
+{
+ "campuscode": "LAMC",
+ "campusname": "Mission College",
+ "termcode": "2268",
+ "termname": "Fall 2026",
+ "subjectlist": [],
+ "classTypeList": [
+  {
+   "name": "IN-PERSON",
+   "value": "01  In Person"
+  },
+  {
+   "name": "ONLINE",
+   "value": "02  Online"
+  },
+  {
+   "name": "C19S",
+   "value": "03  Online Live"
+  },
+  {
+   "name": "HYFLEX",
+   "value": "04  HyFlex-In Person or Online"
+  },
+  {
+   "name": "HYBRID",
+   "value": "05  Hybrid-Partially Online"
+  },
+  {
+   "name": "OER",
+   "value": "06  Zero Textbook Cost (ZTC)"
+  },
+  {
+   "name": "LCT",
+   "value": "07  Low Textbook Cost"
+  },
+  {
+   "name": "DUAL",
+   "value": "08  Dual Enrollment"
+  },
+  {
+   "name": "NONCREDIT",
+   "value": "09  Noncredit"
+  },
+  {
+   "name": "BILINGUAL",
+   "value": "10  Bilingual"
+  },
+  {
+   "name": "NONENGLISH",
+   "value": "11  Not in English"
+  }
+ ],
+ "subjects": [
+  {
+   "name": "Anatomy",
+   "code": "ANATOMY",
+   "courses": [
+    {
+     "subject": "ANATOMY",
+     "catalogNbr": "001",
+     "descr": "Intro To Human Anat",
+     "units": "4.00",
+     "sections": [
+      {
+       "classNbr": "11216 (LEC)",
+       "seats": "0",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "T Th",
+         "times": "7:15 AM - 8:40 AM",
+         "room": "Mission-CMS 030",
+         "instr": "Richard Mellinger"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "11220 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "T",
+           "times": "8:50 AM - 12:00 PM",
+           "room": "Mission-CMS 102",
+           "instr": "Richard Mellinger"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        },
+        {
+         "classNbr": "17817 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "Th",
+           "times": "8:50 AM - 12:00 PM",
+           "room": "Mission-CMS 102",
+           "instr": "Richard Mellinger"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        },
+        {
+         "classNbr": "22248 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "F",
+           "times": "8:50 AM - 12:00 PM",
+           "room": "Mission-CMS 102",
+           "instr": "Diane Livio"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON"
+       ]
+      },
+      {
+       "classNbr": "11240 (LEC)",
+       "seats": "0",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "M W",
+         "times": "5:15 PM - 6:40 PM",
+         "room": "Mission-CMS 030",
+         "instr": "Mitchell Carter"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "11243 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "M",
+           "times": "6:50 PM - 10:00 PM",
+           "room": "Mission-CMS 102",
+           "instr": "Mitchell Carter"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        },
+        {
+         "classNbr": "13199 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "W",
+           "times": "6:50 PM - 10:00 PM",
+           "room": "Mission-CMS 102",
+           "instr": "Mitchell Carter"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON"
+       ]
+      },
+      {
+       "classNbr": "16605 (LEC)",
+       "seats": "4",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "W",
+         "times": "7:00 PM - 9:00 PM",
+         "room": "Mission-Online Live",
+         "instr": "Ali Ebneshahidi"
+        },
+        {
+         "days": "S",
+         "times": "11:20 AM - 12:30 PM",
+         "room": "Mission-CMS 105",
+         "instr": "Ali Ebneshahidi"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "16606 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "S",
+           "times": "8:00 AM - 11:10 AM",
+           "room": "Mission-CMS 102",
+           "instr": "Ali Ebneshahidi"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "HYBRID"
+         ]
+        },
+        {
+         "classNbr": "16607 (LAB)",
+         "seats": "6",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "S",
+           "times": "12:40 PM - 3:50 PM",
+           "room": "Mission-CMS 102",
+           "instr": "Ali Ebneshahidi"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "HYBRID"
+         ]
+        }
+       ],
+       "classType": [
+        "HYBRID"
+       ]
+      },
+      {
+       "classNbr": "20429 (LEC)",
+       "seats": "0",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "M",
+         "times": "12:15 PM - 1:40 PM",
+         "room": "Mission-CMS 105",
+         "instr": "Mitchell Carter"
+        },
+        {
+         "days": "W",
+         "times": "12:15 PM - 1:40 PM",
+         "room": "Mission-Online Live",
+         "instr": "Mitchell Carter"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "20430 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "M",
+           "times": "1:50 PM - 5:00 PM",
+           "room": "Mission-CMS 102",
+           "instr": "Mitchell Carter"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "HYBRID"
+         ]
+        }
+       ],
+       "classType": [
+        "HYBRID"
+       ]
+      },
+      {
+       "classNbr": "28435 (LEC)",
+       "seats": "19",
+       "woi": "8",
+       "dates": "10/26/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "M W",
+         "times": "12:20 PM - 3:40 PM",
+         "room": "Mission-CMS 004",
+         "instr": "LAMC STAFF"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "28436 (LAB)",
+         "seats": "19",
+         "woi": "8",
+         "dates": "10/26/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "T Th",
+           "times": "12:20 PM - 3:40 PM",
+           "room": "Mission-CMS 102",
+           "instr": "LAMC STAFF"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Art",
+   "code": "ART",
+   "courses": [
+    {
+     "subject": "ART",
+     "catalogNbr": "201",
+     "descr": "Drawing I",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "14656 (LEC)",
+       "seats": "8",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "",
+         "times": "",
+         "room": "Mission-Online",
+         "instr": "Justin Cole"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "14657 (LAB)",
+         "seats": "8",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "",
+           "times": "",
+           "room": "Mission-Online",
+           "instr": "Justin Cole"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "ONLINE",
+          "OER"
+         ]
+        }
+       ],
+       "classType": [
+        "ONLINE",
+        "OER"
+       ]
+      },
+      {
+       "classNbr": "11979 (LEC)",
+       "seats": "0",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "M",
+         "times": "12:10 PM - 2:15 PM",
+         "room": "Mission-AMP 305",
+         "instr": "Adam Scott"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "11981 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "M",
+           "times": "2:15 PM - 5:25 PM",
+           "room": "Mission-AMP 305",
+           "instr": "Adam Scott"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON",
+          "OER"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON",
+        "OER"
+       ]
+      },
+      {
+       "classNbr": "11985 (LEC)",
+       "seats": "0",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "",
+         "times": "",
+         "room": "Mission-Online",
+         "instr": "Adam Scott"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "11988 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "",
+           "times": "",
+           "room": "Mission-Online",
+           "instr": "Adam Scott"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "ONLINE",
+          "OER"
+         ]
+        }
+       ],
+       "classType": [
+        "ONLINE",
+        "OER"
+       ]
+      },
+      {
+       "classNbr": "16091 (LEC)",
+       "seats": "0",
+       "woi": "8",
+       "dates": "10/26/26 - 12/20/26",
+       "status": "Waitlist",
+       "meetings": [
+        {
+         "days": "",
+         "times": "",
+         "room": "Mission-Online",
+         "instr": "Linda Schmeltz"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "16092 (LAB)",
+         "seats": "0",
+         "woi": "8",
+         "dates": "10/26/26 - 12/20/26",
+         "status": "Waitlist",
+         "meetings": [
+          {
+           "days": "",
+           "times": "",
+           "room": "Mission-Online",
+           "instr": "Linda Schmeltz"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "ONLINE",
+          "OER"
+         ]
+        }
+       ],
+       "classType": [
+        "ONLINE",
+        "OER"
+       ]
+      },
+      {
+       "classNbr": "15593 (LEC)",
+       "seats": "6",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "Th",
+         "times": "12:45 PM - 2:50 PM",
+         "room": "Mission-AMP 305",
+         "instr": "Kindah Brennan"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "15594 (LAB)",
+         "seats": "6",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "Th",
+           "times": "2:50 PM - 6:00 PM",
+           "room": "Mission-AMP 305",
+           "instr": "Kindah Brennan"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON",
+          "OER"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON",
+        "OER"
+       ]
+      },
+      {
+       "classNbr": "23363 (LEC)",
+       "seats": "5",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "M W",
+         "times": "7:00 PM - 7:50 PM",
+         "room": "Mission-AMP 305",
+         "instr": "Melissa Bartlett"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "23364 (LAB)",
+         "seats": "5",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "M W",
+           "times": "7:50 PM - 9:20 PM",
+           "room": "Mission-AMP 305",
+           "instr": "Melissa Bartlett"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON",
+          "OER"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON",
+        "OER"
+       ]
+      },
+      {
+       "classNbr": "27701 (LEC)",
+       "seats": "Inquire",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "",
+         "times": "",
+         "room": "Mission-Online DUAL ENROLLMENT",
+         "instr": "Kindah Brennan"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "27702 (LAB)",
+         "seats": "Inquire",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "",
+           "times": "",
+           "room": "Mission-Online DUAL ENROLLMENT",
+           "instr": "Kindah Brennan"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "ONLINE",
+          "OER"
+         ]
+        }
+       ],
+       "classType": [
+        "ONLINE",
+        "OER"
+       ]
+      },
+      {
+       "classNbr": "28316 (LEC)",
+       "seats": "Inquire",
+       "woi": "14",
+       "dates": "09/14/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "T",
+         "times": "12:15 PM - 2:35 PM",
+         "room": "Mission-ALBERT EINSTEIN HS",
+         "instr": "Mark Hagen"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "28317 (LAB)",
+         "seats": "Inquire",
+         "woi": "14",
+         "dates": "09/14/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "Th",
+           "times": "12:15 PM - 2:45 PM",
+           "room": "Mission-ALBERT EINSTEIN HS",
+           "instr": "Mark Hagen"
+          },
+          {
+           "days": "",
+           "times": "",
+           "room": "Mission-Online HYBRID DUAL ENR",
+           "instr": "Mark Hagen"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON"
+       ]
+      },
+      {
+       "classNbr": "28726 (LEC)",
+       "seats": "Inquire",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "W",
+         "times": "8:50 AM - 10:30 AM",
+         "room": "Mission-BERT CORONA CHARTER HS",
+         "instr": "Kindah Brennan"
+        },
+        {
+         "days": "",
+         "times": "",
+         "room": "Mission-Online DUAL ENROLLMENT",
+         "instr": "Kindah Brennan"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "28727 (LAB)",
+         "seats": "Inquire",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "F",
+           "times": "8:50 AM - 10:30 AM",
+           "room": "Mission-BERT CORONA CHARTER HS",
+           "instr": "Kindah Brennan"
+          },
+          {
+           "days": "",
+           "times": "",
+           "room": "Mission-Online DUAL ENROLLMENT",
+           "instr": "Kindah Brennan"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "HYFLEX"
+         ]
+        }
+       ],
+       "classType": [
+        "HYFLEX"
+       ]
+      }
+     ]
+    },
+    {
+     "subject": "ART",
+     "catalogNbr": "202",
+     "descr": "Drawing II",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "19812 (LEC)",
+       "seats": "0",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "M",
+         "times": "12:10 PM - 2:15 PM",
+         "room": "Mission-AMP 305",
+         "instr": "Adam Scott"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "19813 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "M",
+           "times": "2:15 PM - 5:25 PM",
+           "room": "Mission-AMP 305",
+           "instr": "Adam Scott"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON",
+          "OER"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON",
+        "OER"
+       ]
+      }
+     ]
+    },
+    {
+     "subject": "ART",
+     "catalogNbr": "204",
+     "descr": "Life Drawing I",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "12089 (LEC)",
+       "seats": "13",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "F",
+         "times": "10:35 AM - 12:40 PM",
+         "room": "Mission-AMP 305",
+         "instr": "John Zarcone"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "12090 (LAB)",
+         "seats": "13",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "F",
+           "times": "12:40 PM - 3:50 PM",
+           "room": "Mission-AMP 305",
+           "instr": "John Zarcone"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON",
+          "LCT"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON",
+        "LCT"
+       ]
+      }
+     ]
+    },
+    {
+     "subject": "ART",
+     "catalogNbr": "205",
+     "descr": "Life Drawing II",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "16121 (LEC)",
+       "seats": "2",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "F",
+         "times": "10:35 AM - 12:40 PM",
+         "room": "Mission-AMP 305",
+         "instr": "John Zarcone"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "16122 (LAB)",
+         "seats": "2",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "F",
+           "times": "12:40 PM - 3:50 PM",
+           "room": "Mission-AMP 305",
+           "instr": "John Zarcone"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON",
+          "OER"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON",
+        "OER"
+       ]
+      }
+     ]
+    },
+    {
+     "subject": "ART",
+     "catalogNbr": "206",
+     "descr": "Life Drawing III",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "16123 (LEC)",
+       "seats": "0",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "F",
+         "times": "10:35 AM - 12:40 PM",
+         "room": "Mission-AMP 305",
+         "instr": "John Zarcone"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "16124 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "F",
+           "times": "12:40 PM - 3:50 PM",
+           "room": "Mission-AMP 305",
+           "instr": "John Zarcone"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON",
+          "OER"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON",
+        "OER"
+       ]
+      }
+     ]
+    },
+    {
+     "subject": "ART",
+     "catalogNbr": "300",
+     "descr": "Intro To Painting",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "12194 (LEC)",
+       "seats": "4",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "T",
+         "times": "10:35 AM - 12:40 PM",
+         "room": "Mission-AMP 308",
+         "instr": "Adam Scott"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "12196 (LAB)",
+         "seats": "4",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "T",
+           "times": "12:40 PM - 3:50 PM",
+           "room": "Mission-AMP 308",
+           "instr": "Adam Scott"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON",
+          "OER"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON",
+        "OER"
+       ]
+      },
+      {
+       "classNbr": "13455 (LEC)",
+       "seats": "9",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "",
+         "times": "",
+         "room": "Mission-Online",
+         "instr": "Deborah Paulsen"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "13456 (LAB)",
+         "seats": "9",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "",
+           "times": "",
+           "room": "Mission-Online",
+           "instr": "Deborah Paulsen"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "ONLINE",
+          "OER"
+         ]
+        }
+       ],
+       "classType": [
+        "ONLINE",
+        "OER"
+       ]
+      },
+      {
+       "classNbr": "17749 (LEC)",
+       "seats": "7",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "M W",
+         "times": "2:30 PM - 3:30 PM",
+         "room": "Mission-AMP 308",
+         "instr": "Deborah Paulsen"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "17750 (LAB)",
+         "seats": "7",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "M W",
+           "times": "3:30 PM - 5:00 PM",
+           "room": "Mission-AMP 308",
+           "instr": "Deborah Paulsen"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON",
+          "OER"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON",
+        "OER"
+       ]
+      }
+     ]
+    },
+    {
+     "subject": "ART",
+     "catalogNbr": "304",
+     "descr": "Acrylic Pntg I",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "19091 (LEC)",
+       "seats": "7",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "T",
+         "times": "10:35 AM - 12:40 PM",
+         "room": "Mission-AMP 308",
+         "instr": "Adam Scott"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "19092 (LAB)",
+         "seats": "7",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "T",
+           "times": "12:40 PM - 3:50 PM",
+           "room": "Mission-AMP 308",
+           "instr": "Adam Scott"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON"
+       ]
+      }
+     ]
+    },
+    {
+     "subject": "ART",
+     "catalogNbr": "305",
+     "descr": "Acrylic Pntg 2",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "19093 (LEC)",
+       "seats": "0",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "T",
+         "times": "10:35 AM - 12:40 PM",
+         "room": "Mission-AMP 308",
+         "instr": "Adam Scott"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "19094 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "T",
+           "times": "12:40 PM - 3:50 PM",
+           "room": "Mission-AMP 308",
+           "instr": "Adam Scott"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON"
+       ]
+      }
+     ]
+    },
+    {
+     "subject": "ART",
+     "catalogNbr": "306",
+     "descr": "Acrylic Pntg 3",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "24398 (LEC)",
+       "seats": "1",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "T",
+         "times": "10:35 AM - 12:40 PM",
+         "room": "Mission-AMP 308",
+         "instr": "Adam Scott"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "24399 (LAB)",
+         "seats": "1",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "T",
+           "times": "12:40 PM - 3:50 PM",
+           "room": "Mission-AMP 308",
+           "instr": "Adam Scott"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON"
+       ]
+      }
+     ]
+    },
+    {
+     "subject": "ART",
+     "catalogNbr": "307",
+     "descr": "Oil Painting I",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "13209 (LEC)",
+       "seats": "2",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "M W",
+         "times": "2:30 PM - 3:30 PM",
+         "room": "Mission-AMP 308",
+         "instr": "Deborah Paulsen"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "13210 (LAB)",
+         "seats": "2",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "M W",
+           "times": "3:30 PM - 5:00 PM",
+           "room": "Mission-AMP 308",
+           "instr": "Deborah Paulsen"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON"
+       ]
+      }
+     ]
+    },
+    {
+     "subject": "ART",
+     "catalogNbr": "308",
+     "descr": "Oil Painting II",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "14564 (LEC)",
+       "seats": "0",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "M W",
+         "times": "2:30 PM - 3:30 PM",
+         "room": "Mission-AMP 308",
+         "instr": "Deborah Paulsen"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "14565 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "M W",
+           "times": "3:30 PM - 5:00 PM",
+           "room": "Mission-AMP 308",
+           "instr": "Deborah Paulsen"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON"
+       ]
+      }
+     ]
+    },
+    {
+     "subject": "ART",
+     "catalogNbr": "309",
+     "descr": "Oil Painting III",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "16573 (LEC)",
+       "seats": "0",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "M W",
+         "times": "2:30 PM - 3:30 PM",
+         "room": "Mission-AMP 308",
+         "instr": "Deborah Paulsen"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "16574 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "M W",
+           "times": "3:30 PM - 5:00 PM",
+           "room": "Mission-AMP 308",
+           "instr": "Deborah Paulsen"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON"
+       ]
+      }
+     ]
+    },
+    {
+     "subject": "ART",
+     "catalogNbr": "501",
+     "descr": "Beg Two-Dim Design",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "10594 (LEC)",
+       "seats": "3",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "",
+         "times": "",
+         "room": "Mission-Online",
+         "instr": "Deborah Paulsen"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "10597 (LAB)",
+         "seats": "3",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "",
+           "times": "",
+           "room": "Mission-Online",
+           "instr": "Deborah Paulsen"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "ONLINE",
+          "LCT"
+         ]
+        }
+       ],
+       "classType": [
+        "ONLINE",
+        "LCT"
+       ]
+      },
+      {
+       "classNbr": "16575 (LEC)",
+       "seats": "19",
+       "woi": "8",
+       "dates": "10/26/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "T Th",
+         "times": "8:50 AM - 11:00 AM",
+         "room": "Mission-AMP 302",
+         "instr": "Brian Ruppel"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "16576 (LAB)",
+         "seats": "19",
+         "woi": "8",
+         "dates": "10/26/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "T Th",
+           "times": "11:00 AM - 2:20 PM",
+           "room": "Mission-AMP 302",
+           "instr": "Brian Ruppel"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON"
+       ]
+      },
+      {
+       "classNbr": "27697 (LEC)",
+       "seats": "Inquire",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "M W",
+         "times": "12:40 PM - 1:30 PM",
+         "room": "Mission-MOUNT LUKENS CONTINUAT",
+         "instr": "Brian Ruppel"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "27698 (LAB)",
+         "seats": "Inquire",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "M W",
+           "times": "1:35 PM - 2:40 PM",
+           "room": "Mission-MOUNT LUKENS CONTINUAT",
+           "instr": "Brian Ruppel"
+          },
+          {
+           "days": "F",
+           "times": "12:40 PM - 1:20 PM",
+           "room": "Mission-MOUNT LUKENS CONTINUAT",
+           "instr": "Brian Ruppel"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON"
+       ]
+      }
+     ]
+    },
+    {
+     "subject": "ART",
+     "catalogNbr": "502",
+     "descr": "Beg Three-Dim Design",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "10772 (LEC)",
+       "seats": "11",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "M W",
+         "times": "10:35 AM - 11:35 AM",
+         "room": "Mission-AMP 105",
+         "instr": "Deborah Paulsen"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "10775 (LAB)",
+         "seats": "11",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "M W",
+           "times": "11:35 AM - 1:05 PM",
+           "room": "Mission-AMP 105",
+           "instr": "Deborah Paulsen"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON",
+          "OER"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON",
+        "OER"
+       ]
+      }
+     ]
+    },
+    {
+     "subject": "ART",
+     "catalogNbr": "700",
+     "descr": "Intro Sculpture",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "13941 (LEC)",
+       "seats": "0",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Closed",
+       "meetings": [
+        {
+         "days": "M W",
+         "times": "10:35 AM - 11:35 AM",
+         "room": "Mission-AMP 105",
+         "instr": "Deborah Paulsen"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "13942 (LAB)",
+         "seats": "0",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Closed",
+         "meetings": [
+          {
+           "days": "M W",
+           "times": "11:35 AM - 1:05 PM",
+           "room": "Mission-AMP 105",
+           "instr": "Deborah Paulsen"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Interior Design",
+   "code": "INTRDGN",
+   "courses": [
+    {
+     "subject": "INTRDGN",
+     "catalogNbr": "116",
+     "descr": "BIM for ID 1",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "13944 (LEC)",
+       "seats": "12",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "S",
+         "times": "8:50 AM - 10:55 AM",
+         "room": "Mission-AMP 302",
+         "instr": "James Lemmon"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "13945 (LAB)",
+         "seats": "12",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "S",
+           "times": "10:55 AM - 1:00 PM",
+           "room": "Mission-AMP 302",
+           "instr": "James Lemmon"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "IN-PERSON"
+       ]
+      },
+      {
+       "classNbr": "16585 (LEC)",
+       "seats": "2",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "S",
+         "times": "8:50 AM - 10:55 AM",
+         "room": "Mission-Online Live",
+         "instr": "James Lemmon"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "16586 (LAB)",
+         "seats": "2",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "S",
+           "times": "10:55 AM - 1:00 PM",
+           "room": "Mission-Online Live",
+           "instr": "James Lemmon"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "C19S"
+         ]
+        }
+       ],
+       "classType": [
+        "C19S"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Mathematics",
+   "code": "MATH",
+   "courses": [
+    {
+     "subject": "MATH",
+     "catalogNbr": "240",
+     "descr": "Trigonometry",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "14297 (LEC)",
+       "seats": "21",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "S",
+         "times": "8:00 AM - 10:05 AM",
+         "room": "Mission-CMS 021",
+         "instr": "Jose Avendano"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "14717 (LAB)",
+         "seats": "21",
+         "woi": "16",
+         "dates": "08/31/26 - 12/20/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "S",
+           "times": "10:15 AM - 12:20 PM",
+           "room": "Mission-CMS 021",
+           "instr": "Jose Avendano"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "OER",
+          "IN-PERSON"
+         ]
+        }
+       ],
+       "classType": [
+        "OER",
+        "IN-PERSON"
+       ]
+      },
+      {
+       "classNbr": "14308 (LEC)",
+       "seats": "15",
+       "woi": "8",
+       "dates": "08/31/26 - 10/25/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "",
+         "times": "",
+         "room": "Mission-Online",
+         "instr": "Hua Lee"
+        }
+       ],
+       "relsections": [
+        {
+         "classNbr": "14716 (LAB)",
+         "seats": "15",
+         "woi": "8",
+         "dates": "08/31/26 - 10/25/26",
+         "status": "Open",
+         "meetings": [
+          {
+           "days": "",
+           "times": "",
+           "room": "Mission-Online",
+           "instr": "Hua Lee"
+          }
+         ],
+         "relsections": [],
+         "classType": [
+          "ONLINE",
+          "OER"
+         ]
+        }
+       ],
+       "classType": [
+        "ONLINE",
+        "OER"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Media Arts",
+   "code": "MEDIART",
+   "courses": [
+    {
+     "subject": "MEDIART",
+     "catalogNbr": "117",
+     "descr": "Intro Social Media",
+     "units": "3.00",
+     "sections": [
+      {
+       "classNbr": "24717 (LEC)",
+       "seats": "24",
+       "woi": "16",
+       "dates": "08/31/26 - 12/20/26",
+       "status": "Open",
+       "meetings": [
+        {
+         "days": "",
+         "times": "",
+         "room": "Mission-Online",
+         "instr": "Morgan Keith"
+        }
+       ],
+       "relsections": [],
+       "classType": [
+        "ONLINE"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

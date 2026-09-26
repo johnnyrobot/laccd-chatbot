@@ -1,0 +1,374 @@
+[
+ {
+  "code": "ACCTG",
+  "name": "Accounting"
+ },
+ {
+  "code": "ADM JUS",
+  "name": "Administration Of Justice"
+ },
+ {
+  "code": "AFRO AM",
+  "name": "African American Studies"
+ },
+ {
+  "code": "ALD HTH",
+  "name": "Allied Health"
+ },
+ {
+  "code": "ANATOMY",
+  "name": "Anatomy"
+ },
+ {
+  "code": "ANIMATN",
+  "name": "Animation"
+ },
+ {
+  "code": "ANTHRO",
+  "name": "Anthropology"
+ },
+ {
+  "code": "ART",
+  "name": "Art"
+ },
+ {
+  "code": "ARTH",
+  "name": "Art History (Ccn)"
+ },
+ {
+  "code": "ARTHIST",
+  "name": "Art History"
+ },
+ {
+  "code": "ASTRON",
+  "name": "Astronomy"
+ },
+ {
+  "code": "BIOLOGY",
+  "name": "Biology"
+ },
+ {
+  "code": "BIOTECH",
+  "name": "Biotechnology"
+ },
+ {
+  "code": "BSICSKL",
+  "name": "Basic Skills"
+ },
+ {
+  "code": "BUS",
+  "name": "Business"
+ },
+ {
+  "code": "CAOT",
+  "name": "Computer Apps Office Tech"
+ },
+ {
+  "code": "CH DEV",
+  "name": "Child Development"
+ },
+ {
+  "code": "CHEM",
+  "name": "Chemistry"
+ },
+ {
+  "code": "CHICANO",
+  "name": "Chicano Studies"
+ },
+ {
+  "code": "CINEMA",
+  "name": "Cinema"
+ },
+ {
+  "code": "CIS",
+  "name": "Computer Information Systems"
+ },
+ {
+  "code": "CLN ART",
+  "name": "Culinary Arts"
+ },
+ {
+  "code": "COLLEGE",
+  "name": "College Studies"
+ },
+ {
+  "code": "COMM",
+  "name": "Communication Studies"
+ },
+ {
+  "code": "COUNSEL",
+  "name": "Counseling"
+ },
+ {
+  "code": "CS",
+  "name": "Computer Science"
+ },
+ {
+  "code": "DANCEST",
+  "name": "Dance Studies"
+ },
+ {
+  "code": "DRAFT",
+  "name": "Drafting"
+ },
+ {
+  "code": "E.S.L.",
+  "name": "English As A Second Language"
+ },
+ {
+  "code": "EARTH",
+  "name": "Earth Science"
+ },
+ {
+  "code": "ECON",
+  "name": "Economics"
+ },
+ {
+  "code": "EDUC",
+  "name": "Education"
+ },
+ {
+  "code": "EGD TEK",
+  "name": "Engineering Graphics & Design"
+ },
+ {
+  "code": "ENG GEN",
+  "name": "Engineering, General"
+ },
+ {
+  "code": "ENG SUP",
+  "name": "Engineering Support"
+ },
+ {
+  "code": "ENGL",
+  "name": "English (Ccn)"
+ },
+ {
+  "code": "ENGLISH",
+  "name": "English"
+ },
+ {
+  "code": "ENV SCI",
+  "name": "Environmental Science"
+ },
+ {
+  "code": "ESL NC",
+  "name": "English Second Language - Nc"
+ },
+ {
+  "code": "ESLCVCS",
+  "name": "English As A Second Lan-Civics"
+ },
+ {
+  "code": "FAM &CS",
+  "name": "Family And Consumer Studies"
+ },
+ {
+  "code": "FINANCE",
+  "name": "Finance"
+ },
+ {
+  "code": "FIRETEK",
+  "name": "Fire Technology"
+ },
+ {
+  "code": "FRENCH",
+  "name": "French"
+ },
+ {
+  "code": "GAD",
+  "name": "Game Art & Design"
+ },
+ {
+  "code": "GEOG",
+  "name": "Geography"
+ },
+ {
+  "code": "HEALTH",
+  "name": "Health"
+ },
+ {
+  "code": "HIST",
+  "name": "History (Ccn)"
+ },
+ {
+  "code": "HISTORY",
+  "name": "History"
+ },
+ {
+  "code": "HLTHOCC",
+  "name": "Health Occupations"
+ },
+ {
+  "code": "HTHTEK",
+  "name": "Health Information Technology"
+ },
+ {
+  "code": "HUMAN",
+  "name": "Humanities"
+ },
+ {
+  "code": "INTRDGN",
+  "name": "Interior Design"
+ },
+ {
+  "code": "ITALIAN",
+  "name": "Italian"
+ },
+ {
+  "code": "JOURNAL",
+  "name": "Journalism"
+ },
+ {
+  "code": "KIN",
+  "name": "Kinesiology"
+ },
+ {
+  "code": "KIN ATH",
+  "name": "Kinesiology Athletics"
+ },
+ {
+  "code": "KIN MAJ",
+  "name": "Kinesiology Major"
+ },
+ {
+  "code": "LAW",
+  "name": "Law"
+ },
+ {
+  "code": "LIB SCI",
+  "name": "Library Science"
+ },
+ {
+  "code": "LING",
+  "name": "Linguistics"
+ },
+ {
+  "code": "MARKET",
+  "name": "Marketing"
+ },
+ {
+  "code": "MATH",
+  "name": "Mathematics"
+ },
+ {
+  "code": "MEDIART",
+  "name": "Media Arts"
+ },
+ {
+  "code": "MGMT",
+  "name": "Management"
+ },
+ {
+  "code": "MICRO",
+  "name": "Microbiology"
+ },
+ {
+  "code": "MULTIMD",
+  "name": "Multimedia"
+ },
+ {
+  "code": "MUSIC",
+  "name": "Music"
+ },
+ {
+  "code": "NRS-HCA",
+  "name": "Nursing-Health Care Ancillar"
+ },
+ {
+  "code": "NURSING",
+  "name": "Nursing"
+ },
+ {
+  "code": "NUTRTN",
+  "name": "Nutrition"
+ },
+ {
+  "code": "OCEANO",
+  "name": "Oceanography"
+ },
+ {
+  "code": "OLD ADL",
+  "name": "Older Adults"
+ },
+ {
+  "code": "PARENT",
+  "name": "Parenting"
+ },
+ {
+  "code": "PHILOS",
+  "name": "Philosophy"
+ },
+ {
+  "code": "PHOTO",
+  "name": "Photography"
+ },
+ {
+  "code": "PHRMCTK",
+  "name": "Pharmacy Technician"
+ },
+ {
+  "code": "PHYS SC",
+  "name": "Physical Science"
+ },
+ {
+  "code": "PHYSICS",
+  "name": "Physics"
+ },
+ {
+  "code": "PHYSIOL",
+  "name": "Physiology"
+ },
+ {
+  "code": "POL SCI",
+  "name": "Political Science"
+ },
+ {
+  "code": "POLS",
+  "name": "Political Science (Ccn)"
+ },
+ {
+  "code": "PROFBKG",
+  "name": "Baking, Professional"
+ },
+ {
+  "code": "PSYC",
+  "name": "Psychology (Ccn)"
+ },
+ {
+  "code": "PSYCH",
+  "name": "Psychology"
+ },
+ {
+  "code": "REAL ES",
+  "name": "Real Estate"
+ },
+ {
+  "code": "SOC",
+  "name": "Sociology"
+ },
+ {
+  "code": "SPANISH",
+  "name": "Spanish"
+ },
+ {
+  "code": "STAT",
+  "name": "Statistics"
+ },
+ {
+  "code": "TECTHTR",
+  "name": "Technical Stage Production"
+ },
+ {
+  "code": "THEATER",
+  "name": "Theater"
+ },
+ {
+  "code": "TUTOR",
+  "name": "Supervised Learning Assistance"
+ },
+ {
+  "code": "VOC ED",
+  "name": "Vocational Education"
+ }
+]

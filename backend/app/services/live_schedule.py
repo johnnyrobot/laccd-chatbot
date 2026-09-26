@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import asyncio
 import json
+import re
 from collections import OrderedDict
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from difflib import SequenceMatcher
 from typing import Dict, Optional, Tuple
@@ -114,6 +116,13 @@ async def get_subjects(campus: str, term: str) -> list[dict]:
 
 def fuzzy_match_subject(query: str, subjects: list[dict], threshold: float = 0.6) -> Optional[str]:
     query_lower = query.lower().strip()
+    # Exact code or name first, then the singular ("arts" means Art). Without
+    # the singular pass the substring bonus below scores "Media Arts" above Art.
+    singular = query_lower[:-1] if query_lower.endswith("s") and len(query_lower) > 3 else None
+    for wanted in filter(None, (query_lower, singular)):
+        for subject in subjects:
+            if wanted in (subject.get("code", "").lower(), subject.get("name", "").lower()):
+                return subject.get("code", "").upper()
     best_code = None
     best_score = 0.0
     for subject in subjects:
@@ -166,7 +175,118 @@ async def get_class_listing(campus: str, term: str, subjects: list[str] | None =
         return data
 
 
-def format_sections(listing: dict, course_number: str | None = None, keyword: str | None = None) -> list[dict]:
+# Rooms are "<campus>-<building> <room>": "Mission-AMP 302", "Harbor - Student
+# Union", "SOUTHWEST-LOCKE". Trade-Tech's prefix carries its own dash
+# ("Trade-Tech B3-207", "Trade-Tech -TALLNC-DOM", but "Trade-Online").
+_ROOM_PREFIX_RE = re.compile(r"^(?:trade-tech\s*-?\s*|[a-z]+\s*-\s*)", re.IGNORECASE)
+_BUILDING_RE = re.compile(r"[A-Za-z0-9/.]+")
+# Places a student cannot walk into. Online is a modality, not a building.
+_NOT_BUILDINGS = {"", "ONLINE", "OFF", "OFFSITE", "TBA", "SCHEDULE"}
+
+
+def room_building(room: str | None) -> str:
+    """The building code in a schedule room string, upper-cased; "" if none."""
+    rest, count = _ROOM_PREFIX_RE.subn("", (room or "").strip(), count=1)
+    if not count:
+        return ""
+    match = _BUILDING_RE.match(rest)
+    return match.group(0).upper() if match else ""
+
+
+def building_codes(listing: dict) -> set[str]:
+    """Every building a section in this listing meets in."""
+    codes = {
+        room_building(meeting.get("room"))
+        for _course, section, _primary in iter_schedule_sections(listing)
+        for meeting in section.get("meetings") or []
+    }
+    return codes - _NOT_BUILDINGS
+
+
+DAY_NAMES = {"M": "Monday", "T": "Tuesday", "W": "Wednesday", "Th": "Thursday",
+             "F": "Friday", "S": "Saturday", "Su": "Sunday"}
+# Start-time bands. Stated in the answer so a student can see the rule applied.
+TIME_OF_DAY_RULES = {
+    "morning": "starting before noon",
+    "afternoon": "starting between noon and 4:59 PM",
+    "evening": "starting at 5 PM or later",
+}
+_START_RE = re.compile(r"^\s*(\d{1,2}):(\d{2})\s*([AP]M)", re.IGNORECASE)
+
+
+def _start_minutes(times: str | None) -> int | None:
+    match = _START_RE.match(times or "")
+    if not match:
+        return None
+    hour, minute, meridiem = int(match.group(1)) % 12, int(match.group(2)), match.group(3).upper()
+    return (hour + (12 if meridiem == "PM" else 0)) * 60 + minute
+
+
+def _time_of_day(times: str | None) -> str | None:
+    start = _start_minutes(times)
+    if start is None:
+        return None
+    if start < 12 * 60:
+        return "morning"
+    return "afternoon" if start < 17 * 60 else "evening"
+
+
+@dataclass(frozen=True, slots=True)
+class ScheduleFilters:
+    """Constraints a single meeting must satisfy together.
+
+    "Saturday in AMP" means one meeting that is both — not a Saturday meeting in
+    one room and an AMP meeting on another day.
+    """
+
+    days: frozenset[str] = frozenset()  # API day tokens: M T W Th F S Su
+    building: str | None = None
+    time_of_day: str | None = None  # a TIME_OF_DAY_RULES key
+    modality: str | None = None  # "online" | "in_person"
+
+    def __bool__(self) -> bool:
+        return bool(self.days or self.building or self.time_of_day or self.modality)
+
+    def without_building(self) -> "ScheduleFilters":
+        return ScheduleFilters(days=self.days, time_of_day=self.time_of_day, modality=self.modality)
+
+    def matches(self, meeting: dict) -> bool:
+        building = room_building(meeting.get("room"))
+        if self.days and not self.days & set((meeting.get("days") or "").split()):
+            return False
+        if self.building and building != self.building:
+            return False
+        if self.time_of_day and _time_of_day(meeting.get("times")) != self.time_of_day:
+            return False
+        if self.modality == "online" and building != "ONLINE":
+            return False
+        if self.modality == "in_person" and building in _NOT_BUILDINGS:
+            return False
+        return True
+
+    def describe(self) -> str:
+        """" meeting in AMP on Saturday", for answer headers. "" when empty."""
+        parts = []
+        if self.modality == "online":
+            parts.append("online")
+        elif self.modality == "in_person":
+            parts.append("in person")
+        if self.building:
+            parts.append(f"in {self.building}")
+        if self.days:
+            ordered = [DAY_NAMES[d] for d in DAY_NAMES if d in self.days]
+            parts.append("on " + " or ".join(ordered))
+        if self.time_of_day:
+            parts.append(f"in the {self.time_of_day} ({TIME_OF_DAY_RULES[self.time_of_day]})")
+        return (" meeting " + " ".join(parts)) if parts else ""
+
+
+def format_sections(
+    listing: dict,
+    course_number: str | None = None,
+    keyword: str | None = None,
+    filters: ScheduleFilters | None = None,
+) -> list[dict]:
     rows = []
     for course, section, primary in iter_schedule_sections(listing):
         catalog = course.get("catalogNbr", "")
@@ -180,7 +300,14 @@ def format_sections(listing: dict, course_number: str | None = None, keyword: st
             continue
 
         class_number, component = normalize_class_number(section.get("classNbr"))
-        meeting = (section.get("meetings") or [{}])[0]
+        meetings = section.get("meetings") or [{}]
+        if filters:
+            # Any meeting may satisfy the filters; show the one that did.
+            meeting = next((m for m in meetings if filters.matches(m)), None)
+            if meeting is None:
+                continue
+        else:
+            meeting = meetings[0]
         rows.append(
             {
                 "course_code": f"{course.get('subject', '')} {catalog}",
@@ -206,9 +333,10 @@ async def search_live_schedule(
     subject: str | None = None,
     course_number: str | None = None,
     keyword: str | None = None,
+    filters: ScheduleFilters | None = None,
 ) -> dict:
     listing = await get_class_listing(campus, term, [subject] if subject else None)
-    all_sections = format_sections(listing, course_number=course_number, keyword=keyword)
+    all_sections = format_sections(listing, course_number=course_number, keyword=keyword, filters=filters)
     sections = all_sections[:MAX_PUBLIC_SECTIONS]
     return {
         "campus": campus,
@@ -250,10 +378,15 @@ async def search_all_campuses(
     course_number: str | None = None,
     keyword: str | None = None,
     primary_campus: str = "LAMC",
+    filters: ScheduleFilters | None = None,
 ) -> dict:
+    # Building codes are campus-local, so only the other filters travel.
+    filters = filters.without_building() if filters else None
+
     async def fetch(campus_code: str) -> tuple[str, dict]:
         return campus_code, await search_live_schedule(
-            campus_code, term=term, subject=subject, course_number=course_number, keyword=keyword
+            campus_code, term=term, subject=subject, course_number=course_number, keyword=keyword,
+            filters=filters,
         )
 
     results = await asyncio.gather(*[fetch(code) for code in ALL_CAMPUSES], return_exceptions=True)

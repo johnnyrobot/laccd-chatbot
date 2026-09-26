@@ -392,6 +392,9 @@ function getHistory() {
     var role = el.classList.contains("user") ? "user" : "assistant";
     var bubble = el.querySelector(".bubble");
     if (!bubble) continue;
+    // The welcome banner is UI, not conversation. Sending it made every first
+    // question look like a follow-up and get rewritten by the server.
+    if (bubble.classList.contains("welcome-bubble")) continue;
     var limit = (role === "assistant") ? 1500 : 300;
     var text = bubble.textContent.trim().substring(0, limit);
     if (text) history.push({ role: role, content: text });

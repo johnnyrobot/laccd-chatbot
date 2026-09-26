@@ -4,7 +4,7 @@ import asyncio
 import json
 import logging
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date
 from typing import Any
 
@@ -20,6 +20,8 @@ from app.services.clarification import Clarification
 from app.services.live_schedule import (
     ALL_CAMPUSES,
     CAMPUS_NAMES,
+    ScheduleFilters,
+    building_codes,
     find_subject_code,
     format_sections,
     get_class_listing,
@@ -203,6 +205,20 @@ _COURSE_CODE_RE_UPPER = re.compile(
 )
 
 
+def _conversation_history(history: list[dict] | None) -> list[dict]:
+    """History from the student's first message on.
+
+    Whatever an assistant "said" before that is UI chrome — the web client sends
+    its welcome banner — not conversation. Keeping it made every first turn look
+    like a follow-up, so the rewriter paraphrased it: "classes in AMP" became
+    "classes in the AMP program" and routed to Program Mapper.
+    """
+    for index, item in enumerate(history or []):
+        if item.get("role") == "user":
+            return history[index:]
+    return []
+
+
 def _find_course_code(message: str):
     """Find a course code in the message, trying case-sensitive first then uppercase fallback."""
     return _COURSE_CODE_RE.search(message) or _COURSE_CODE_RE_UPPER.search(message.upper())
@@ -329,6 +345,7 @@ class ChatOrchestrator:
 
     def _rewrite_with_context(self, message: str, history: list[dict] | None) -> RewriteResult:
         """Rewrite an ambiguous follow-up, detect language, and translate to English for routing."""
+        history = _conversation_history(history)
         has_history = bool(history) and (
             len(message.split()) <= 15 or self._ANAPHORIC_RE.search(message)
         )
@@ -354,7 +371,11 @@ class ChatOrchestrator:
                 'course codes (e.g., CIS 101, MATH 261, STAT C1000) from the conversation context. '
                 'Also include any GE system/area references (e.g., IGETC Area 2A, CSU-GE Area B4). '
                 'If the user references a program or degree, include the full name '
-                '(e.g., "Computer Science AS-T") in the rewritten question.\n'
+                '(e.g., "Computer Science AS-T") in the rewritten question. '
+                'Keep acronyms, abbreviations, and building or room names exactly as the '
+                'user wrote them — never expand an acronym (keep "AMP"; do not write '
+                '"Arts, Media, and Performance"). Do not add words such as "program", '
+                '"degree", "major", or "pathway" that the user did not say.\n'
                 '- "lang": ISO 639-1 language code of the user\'s message (e.g. "en", "es", "hy", "zh")\n'
                 "If the message is already clear and in English, return it unchanged as the english field.\n"
                 "Return ONLY valid JSON, no markdown fences."
@@ -366,6 +387,7 @@ class ChatOrchestrator:
                     parsed = json.loads(cleaned)
                     english = parsed.get("english", message).strip()
                     lang = parsed.get("lang", "en").strip().lower()
+                    english = self._drop_invented_program_terms(english, message, history)
                     logger.info("Query rewritten (lang=%s): %r -> %r", lang, redact_pii(message), redact_pii(english))
                     return RewriteResult(english_query=english, detected_lang=lang)
             except Exception:
@@ -393,6 +415,21 @@ class ChatOrchestrator:
                 logger.warning("Language detection failed, assuming English", exc_info=True)
 
         return RewriteResult(english_query=message, detected_lang="en")
+
+    @staticmethod
+    def _drop_invented_program_terms(english: str, message: str, history: list[dict]) -> str:
+        """Remove program-route keywords the rewriter made up.
+
+        The program branch sits above the schedule branch in `answer()`, so one
+        invented word reroutes the turn: prod rewrote "are there classes in AMP
+        on Saturday's" as "...in the AMP program..." and answered from RAG. A term
+        survives only if the student or the conversation actually used it.
+        """
+        grounded = " ".join([message, *(item.get("content", "") for item in history)]).lower()
+        for term in PROGRAM_TERMS:
+            if term not in grounded:
+                english = re.sub(rf"\s*\b{re.escape(term)}s?\b", "", english, flags=re.IGNORECASE)
+        return english
 
     def resolve_query(self, message: str, history: list[dict] | None = None) -> RewriteResult:
         """Resolve a turn to a standalone English query + language code.
@@ -515,6 +552,59 @@ class ChatOrchestrator:
             or any(p in lowered for p in RAG_OVERRIDE_PHRASES)
         )
 
+    # ------------------------------------------------------------------
+    # Corrections ("this is not correct")
+    # ------------------------------------------------------------------
+
+    _CORRECTION_RE = re.compile(
+        r"\b(?:not|isn't|isnt)\s+(?:correct|right|accurate)\b"
+        r"|\bincorrect\b|\bwrong\b"
+        r"|\bnot\s+what\s+i\s+(?:asked|meant|wanted|was\s+looking)"
+        r"|\b(?:do|does|did)\s+not\s+belong\b"
+        r"|\b(?:don't|doesn't|didn't|dont|doesnt|didnt)\s+belong\b",
+        re.IGNORECASE,
+    )
+    # A correction is short. Anything longer is a new question that happens to
+    # contain "wrong" ("what happens if I register for the wrong class?").
+    _CORRECTION_MAX_WORDS = 12
+    # Our own schedule answers start "Found N ... section(s) at <college> for <term>".
+    _SCHEDULE_ANSWER_RE = re.compile(r"^\s*Found\b.*?\bsections?\b.*?\bat (.+?) for ", re.DOTALL)
+
+    def _is_user_correction(self, message: str, history: list[dict] | None) -> bool:
+        """Is this turn telling us the previous answer was wrong?"""
+        history = _conversation_history(history)
+        if not any(item.get("role") == "assistant" for item in history):
+            return False  # nothing to correct
+        text = message.strip().replace("’", "'")
+        if len(text.split()) > self._CORRECTION_MAX_WORDS or not self._CORRECTION_RE.search(text):
+            return False
+        return not self._matches_any_intent(text, text.lower())
+
+    def _handle_user_correction(self, history: list[dict], campus_code: str) -> ChatResponse:
+        """Acknowledge, say where the last answer came from, and ask — never re-run it."""
+        last = next(
+            (item.get("content", "") for item in reversed(history) if item.get("role") == "assistant"),
+            "",
+        )
+        lines = [
+            "Sorry, that wasn't the answer you needed. Rather than run the same "
+            "search again, can you tell me what was off?",
+        ]
+        if source := self._SCHEDULE_ANSWER_RE.search(last):
+            lines += [
+                "",
+                "For reference, the sections I listed come straight from the LACCD "
+                f"district class schedule, which lists them under {source.group(1).strip()}.",
+            ]
+        lines += [
+            "",
+            "- **Not the classes you meant?** Tell me the subject, building, day, or "
+            'time you had in mind, for example "classes in AMP on Saturday".',
+            "- **A detail looks wrong?** If a time, room, or instructor looks off, the "
+            f"official LACCD Class Search is the final word: {self._class_search_url(campus_code)}",
+        ]
+        return ChatResponse(answer="\n".join(lines), route="user_correction")
+
     def _translate_if_needed(self, text: str, lang: str) -> str:
         """Translate a response into the user's language. No-op for English."""
         if lang == "en":
@@ -565,6 +655,25 @@ class ChatOrchestrator:
                     "detected_lang": lang,
                 },
             )
+            return resp
+
+        history = _conversation_history(history)
+        # "this is not correct" is feedback on our last answer, not a query. The
+        # rewriter turned it into a restatement of that answer's question, which
+        # re-ran the same search and returned the same answer, twice. Handled
+        # before the routing ladder because no route can answer it.
+        if self._is_user_correction(message, history):
+            campus_code = (campus or settings.default_campus).upper()
+            resp = self._handle_user_correction(history, campus_code)
+            lf = get_client()
+            lf.set_current_trace_io(input=message, output=resp.answer)
+            lf.update_current_span(
+                metadata={"route": resp.route, "route_trigger": "user_correction", "campus": campus_code},
+            )
+            try:
+                lf.score_current_trace(name="user_correction", value=1, data_type="NUMERIC")
+            except Exception as exc:  # telemetry must not break the reply
+                logger.warning("Could not emit the user_correction score: %s", exc)
             return resp
 
         # `resolved` is supplied when the caller (the guardrails layer) already
@@ -625,7 +734,9 @@ class ChatOrchestrator:
         elif self._schedule_terms_matched(english_query, lowered):
             route_trigger = "schedule"
             matched_terms = self._schedule_terms_matched(english_query, lowered)
-            resp = await self._handle_schedule_query(english_query, campus_code, lang=lang)
+            resp = await self._handle_schedule_query(
+                english_query, campus_code, lang=lang, original_message=message,
+            )
         else:
             resp = await self._handle_rag_query(english_query, campus_code=campus_code, lang=lang, use_live_crawl=use_live_crawl)
         resp.detected_lang = lang
@@ -2586,6 +2697,12 @@ class ChatOrchestrator:
             logger.warning(f"PM API failed for program query: {e}")
             return await self._handle_rag_query(message, campus_code=campus_code, lang=lang)
         if not matches:
+            # "classes ... for Fall 2026" is a schedule question whatever else it
+            # says; website RAG has no section data and answers "no information".
+            lowered = message.lower()
+            if self._schedule_terms_matched(message, lowered) and self._TERM_REF_RE.search(lowered):
+                logger.info("Program search empty for '%s' at %s, answering from the schedule", redact_pii(query), campus_code)
+                return await self._handle_schedule_query(message, campus_code, lang=lang)
             logger.info("Program search empty for '%s' at %s, falling back to RAG", redact_pii(query), campus_code)
             return await self._handle_rag_query(message, campus_code=campus_code, lang=lang)
         matches = select_explicit_program(message, matches)
@@ -2613,11 +2730,29 @@ class ChatOrchestrator:
         return ChatResponse(answer=self._translate_if_needed(self._format_program_bundle(bundle), lang), route="program_mapper_bundle", tool_payload=bundle)
 
     @observe(name="chat.schedule_query")
-    async def _handle_schedule_query(self, message: str, campus_code: str, lang: str = "en") -> ChatResponse:
+    async def _handle_schedule_query(
+        self, message: str, campus_code: str, lang: str = "en", original_message: str | None = None,
+    ) -> ChatResponse:
         lowered = message.lower()
         term = self._extract_term_code(lowered)
         course_number = self._extract_course_number(message)
-        subject_guesses = self._extract_subject_guesses(message)
+        # Read constraints from the student's own words too: the rewriter has
+        # expanded "AMP" to "Arts, Media, and Performance" and dropped it outright.
+        texts = [message] + ([original_message] if original_message and original_message != message else [])
+        filters = self._extract_schedule_filters(" ".join(texts))
+        building = await self._detect_building(texts, campus_code, term)
+        if building:
+            filters = replace(filters, building=building)
+        # A building scopes the search by itself. Mining the words around it for
+        # subjects is how "Arts, Media, and Performance (AMP)" became Media Arts.
+        # Only an explicit course code ("ART 201 in AMP") still narrows it. Case-
+        # sensitive on purpose: the upper-cased fallback reads "Fall 2026" as a
+        # course, and "AMP 302" is a room, not a course.
+        explicit = _COURSE_CODE_RE.search(message)
+        names_course = bool(explicit) and explicit.group(1).strip().upper() != building
+        subject_guesses = (
+            self._extract_subject_guesses(message) if not building or names_course else []
+        )
         subject_code = None
         subject_name = None
         subject_guess = subject_guesses[0] if subject_guesses else None
@@ -2626,13 +2761,18 @@ class ChatOrchestrator:
         if len(subject_guesses) > 1:
             all_sections = []
             matched_subjects = []
+            matched_codes: set[str] = set()
             for guess in subject_guesses:
                 code, name = await find_subject_code(guess, campus_code, term)
-                if code:
+                # Two guesses often land on one subject ("media", "arts"); fetching
+                # it twice listed every section twice.
+                if code and code not in matched_codes:
+                    matched_codes.add(code)
                     result = await search_live_schedule(
                         campus_code, term=term, subject=code,
                         course_number=course_number,
                         keyword=None,
+                        filters=filters,
                     )
                     sections = result.get("sections", [])
                     all_sections.extend(sections)
@@ -2649,7 +2789,7 @@ class ChatOrchestrator:
                     "term_name": result.get("term_name", get_term_name(term)),
                 }
                 subj_label = ", ".join(matched_subjects)
-                answer_text = self._format_live_schedule(combined_payload, subj_label)
+                answer_text = self._format_live_schedule(combined_payload, subj_label, filters)
                 return ChatResponse(
                     answer=self._translate_if_needed(answer_text, lang),
                     route="live_schedule",
@@ -2680,20 +2820,102 @@ class ChatOrchestrator:
                 )
         wants_cross_campus = any(term_phrase in lowered for term_phrase in ALL_CAMPUS_TERMS) or "where is" in lowered
         if wants_cross_campus:
-            results = await search_all_campuses(term=term, subject=subject_code, course_number=course_number, keyword=subject_guess, primary_campus=campus_code)
-            if results.get("total_sections", 0) == 0 and subject_code and course_number:
+            results = await search_all_campuses(term=term, subject=subject_code, course_number=course_number, keyword=subject_guess, primary_campus=campus_code, filters=filters)
+            # With filters, zero is a real answer ("none on Sunday"), not a miss to retry.
+            if results.get("total_sections", 0) == 0 and subject_code and course_number and not filters:
                 return await self._retry_cross_ref_or_rag(message, subject_code, course_number, campus_code, term, lang=lang, cross_campus=True)
-            return ChatResponse(answer=self._translate_if_needed(self._format_multi_campus_schedule(results), lang), route="live_schedule_all", tool_payload=results)
-        live = await search_live_schedule(campus_code, term=term, subject=subject_code, course_number=course_number, keyword=subject_guess if not subject_code else None)
-        if live["total_sections"] == 0 and subject_code and course_number:
+            return ChatResponse(answer=self._translate_if_needed(self._format_multi_campus_schedule(results, filters), lang), route="live_schedule_all", tool_payload=results)
+        live = await search_live_schedule(campus_code, term=term, subject=subject_code, course_number=course_number, keyword=subject_guess if not subject_code else None, filters=filters)
+        if live["total_sections"] == 0 and subject_code and course_number and not filters:
             return await self._retry_cross_ref_or_rag(message, subject_code, course_number, campus_code, term, lang=lang, cross_campus=False)
-        answer_text = self._format_live_schedule(live, subject_name)
+        answer_text = self._format_live_schedule(live, subject_name, filters)
         # Enrich with graph context for specific course lookups
         if subject_code and course_number and neo4j_service.is_configured():
             enrichment = await self._get_schedule_enrichment(subject_code, course_number, campus_code)
             if enrichment:
                 answer_text += enrichment
         return ChatResponse(answer=self._translate_if_needed(answer_text, lang), route="live_schedule", tool_payload=live)
+
+    _DAY_WORDS = (
+        ("monday", "M"), ("tuesday", "T"), ("wednesday", "W"), ("thursday", "Th"),
+        ("friday", "F"), ("saturday", "S"), ("sunday", "Su"),
+    )
+    _TIME_OF_DAY_WORDS = (
+        ("morning", r"\bmornings?\b"),
+        ("afternoon", r"\bafternoons?\b"),
+        ("evening", r"\bevenings?\b|\bnights?\b"),
+    )
+
+    def _extract_schedule_filters(self, text: str) -> ScheduleFilters:
+        """Day, time-of-day and online/in-person constraints named in the text.
+
+        Buildings need the campus's own room list, so `_detect_building` adds them.
+        """
+        lowered = text.lower()
+        days = {code for word, code in self._DAY_WORDS if re.search(rf"\b{word}s?\b", lowered)}
+        if re.search(r"\bweekends?\b", lowered):
+            days |= {"S", "Su"}
+        # Two different times of day, or both modalities, is no constraint at all.
+        times = [name for name, pattern in self._TIME_OF_DAY_WORDS if re.search(pattern, lowered)]
+        in_person = re.search(r"\bin[\s-]person\b|\bon[\s-]campus\b", lowered) is not None
+        online = re.search(r"\bonline\b", lowered) is not None
+        return ScheduleFilters(
+            days=frozenset(days),
+            time_of_day=times[0] if len(times) == 1 else None,
+            modality=("in_person" if in_person else "online") if in_person != online else None,
+        )
+
+    # How a building is named:
+    #   - any case before the word "building" ("the chem building");
+    #   - in capitals, 3+ characters or with a digit ("AMP", "CMS", "B3");
+    #   - a 1-2 letter code in capitals right after "in"/"at" ("in FH", "at CC").
+    # Lower-case words are not buildings on their own: EL, FIELD, MATH and ROOM
+    # are all building codes somewhere in the district. Measured on Fall 2026,
+    # without the third rule LACC's main halls (FH, DH, JH, CC) never matched.
+    _NAMED_BUILDING_RE = re.compile(r"\b([A-Za-z0-9/]+)\s+(?:building|bldg)\b", re.IGNORECASE)
+    _CAPS_TOKEN_RE = re.compile(r"\b[A-Z][A-Z0-9/]*[A-Z0-9]\b")
+    _SHORT_CODE_AFTER_IN_RE = re.compile(r"\b(?i:in|at)\s+(?:(?i:the)\s+)?([A-Z]{1,2})\b")
+    _NEVER_BUILDINGS = set(CAMPUS_NAMES) | {"LACCD", "LACCC"}
+    # Building codes that are usually something else. LA is a building at City
+    # and East but far more often "Los Angeles"; only "the LA building" counts.
+    _AMBIGUOUS_CODES = {"LA", "AM", "PM"}
+
+    async def _detect_building(self, texts: list[str], campus_code: str, term: str) -> str | None:
+        """The campus building these texts name, if any.
+
+        Only a code that really appears in this term's room list counts. A code
+        that is also a subject (ART is a subject everywhere and a building at
+        Valley and Pierce) is read as the subject unless the student says
+        "building" — "ART classes" means Art, "the ART building" means the place.
+        """
+        named: list[str] = []
+        loose: list[str] = []
+        for text in texts:
+            named += [token.upper() for token in self._NAMED_BUILDING_RE.findall(text)]
+            loose += [
+                token for token in self._CAPS_TOKEN_RE.findall(text)
+                if len(token) >= 3 or any(ch.isdigit() for ch in token)
+            ]
+            loose += self._SHORT_CODE_AFTER_IN_RE.findall(text)
+        named = [c for c in dict.fromkeys(named) if c not in self._NEVER_BUILDINGS]
+        loose = [
+            c for c in dict.fromkeys(loose)
+            if c not in self._NEVER_BUILDINGS and c not in self._AMBIGUOUS_CODES and c not in named
+        ]
+        if not named and not loose:
+            return None
+        try:
+            if loose:
+                subjects = await get_subjects(campus_code, term)
+                subject_codes = {str(s.get("code", "")).upper() for s in subjects}
+                loose = [c for c in loose if c not in subject_codes]
+            if not named and not loose:
+                return None
+            buildings = building_codes(await get_class_listing(campus_code, term))
+        except Exception:
+            logger.warning("Building detection failed; searching without a building", exc_info=True)
+            return None
+        return next((c for c in [*named, *loose] if c in buildings), None)
 
     @observe(name="chat.ztc_query")
     async def _handle_ztc_query(self, message: str, campus_code: str, lang: str = "en") -> ChatResponse:
@@ -2972,8 +3194,12 @@ class ChatOrchestrator:
             "some", "many", "they", "than", "2025", "2026",
             "become", "take", "study", "start", "year", "high", "school", "student",
             "saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday",
+            "saturdays", "sundays", "mondays", "tuesdays", "wednesdays", "thursdays", "fridays",
+            "mornings", "afternoons", "evenings",
             "meet", "meets", "time", "offer", "offers", "lamc", "lavc", "lapc",
             "other", "campuses", "besides",
+            "schedules", "look", "weekend", "weekends", "night", "nights", "person",
+            "building", "buildings", "room",
             "free", "book", "books", "textbook", "textbooks", "cost", "zero",
             "afford", "save", "options", "open", "educational",
         }
@@ -3076,7 +3302,7 @@ class ChatOrchestrator:
                     enrichment = await neo4j_service.get_course_enrichment(resolved, course_number, campus_code)
             if not enrichment:
                 return None
-            parts: list[str] = ["\n\n---\n*Verified academic details:*"]
+            parts: list[str] = []
             uc = enrichment.get("uc_transferable")
             csu = enrichment.get("csu_transferable")
             if uc is not None or csu is not None:
@@ -3093,34 +3319,46 @@ class ChatOrchestrator:
             if ge_areas:
                 ge_strs = [f"{g['ge_system']} {g['ge_code']}" for g in ge_areas[:4]]
                 parts.append(f"GE areas: {', '.join(ge_strs)}")
-            return " | ".join(parts) if len(parts) > 1 else None
+            if not parts:
+                return None
+            return "\n\n---\n*Verified academic details:* " + " | ".join(parts)
         except Exception:
             logger.debug("Schedule enrichment failed", exc_info=True)
             return None
 
-    def _format_live_schedule(self, payload: dict[str, Any], subject_name: str | None) -> str:
+    def _format_live_schedule(
+        self, payload: dict[str, Any], subject_name: str | None, filters: ScheduleFilters | None = None,
+    ) -> str:
         sections = payload["sections"]
         campus_name = payload["campus_name"]
         campus_code = payload["campus"]
         term_name = payload["term_name"]
+        # Say what was searched, so "none" reads as "none on Sunday in AMP".
+        described = filters.describe() if filters else ""
         if not sections:
+            if described:
+                return f"I didn't find any sections{described} at {campus_name} for {term_name}."
             return f"I didn't find any matching live sections at {campus_name} for {term_name}."
         total = payload["total_sections"]
         subject_label = f" **{subject_name}**" if subject_name else ""
         count_word = "section" if total == 1 else "sections"
-        lines = [f"Found **{total}**{subject_label} {count_word} at {campus_name} for {term_name}.", ""]
+        lines = [f"Found **{total}**{subject_label} {count_word}{described} at {campus_name} for {term_name}.", ""]
         for section in sections:
             lines.append(self._fmt_section(section, strip_campus=True))
         return "\n".join(lines)
 
-    def _format_multi_campus_schedule(self, payload: dict[str, Any]) -> str:
+    def _format_multi_campus_schedule(
+        self, payload: dict[str, Any], filters: ScheduleFilters | None = None,
+    ) -> str:
         campuses = payload["campuses"]
         term_name = payload["term_name"]
+        # search_all_campuses drops the building (codes are campus-local).
+        described = filters.without_building().describe() if filters else ""
         if not campuses:
-            return f"I didn't find matching live sections across the district for {term_name}."
+            return f"I didn't find matching live sections{described} across the district for {term_name}."
         total = payload["total_sections"]
         count_word = "section" if total == 1 else "sections"
-        lines = [f"Found **{total}** {count_word} across the district for {term_name}.", ""]
+        lines = [f"Found **{total}** {count_word}{described} across the district for {term_name}.", ""]
         for campus_code, campus_data in campuses.items():
             n = campus_data["section_count"]
             cname = campus_data["campus_name"]
