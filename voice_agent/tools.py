@@ -11,6 +11,7 @@ import logging
 import re
 import threading
 import time
+from dataclasses import replace
 
 from app.services.crawl4ai_service import Crawl4AIService
 from app.services.gemini_file_search import GeminiFileSearchService
@@ -21,7 +22,11 @@ from langfuse import observe
 from app.services.live_schedule import (
     ALL_CAMPUSES,
     CAMPUS_NAMES,
+    ScheduleFilters,
+    building_codes,
+    filters_from_text,
     find_subject_code,
+    get_class_listing,
     get_term_name,
     search_all_campuses,
     search_live_schedule,
@@ -108,7 +113,7 @@ def _schedule_coverage_voice(sections: list[dict], course_limit: int = 12) -> st
     return coverage
 
 
-def _fmt_sections_voice(sections: list[dict], limit: int = 8) -> str:
+def _fmt_sections_voice(sections: list[dict], limit: int = 8, show_location: bool = False) -> str:
     """Format schedule sections as readable plain text for voice."""
     if not sections:
         return "No sections found."
@@ -125,6 +130,9 @@ def _fmt_sections_voice(sections: list[dict], limit: int = 8) -> str:
             parts.append(days)
         else:
             parts.append("Online or TBA")
+        location = s.get("location", "TBA")
+        if show_location and location not in ("TBA", "") and "online" not in location.lower():
+            parts.append(f"in {location}")
         instructor = s.get("instructor", "TBA")
         if instructor not in ("TBA", ""):
             parts.append(f"with {instructor}")
@@ -283,34 +291,136 @@ async def academic_answer(question: str, campus_code: str = "LAMC") -> str:
     return _voice_plain_text(response.answer)
 
 
+# Callers and the realtime model shorten days ("Sat", "Tues/Thurs"). The shared
+# parser reads only full names, which is right for chat sentences ("I sat in").
+_DAY_ABBREVIATIONS = {
+    "mon": "monday", "tu": "tuesday", "tue": "tuesday", "tues": "tuesday",
+    "wed": "wednesday", "th": "thursday", "thu": "thursday", "thur": "thursday",
+    "thurs": "thursday", "fri": "friday", "sat": "saturday", "sun": "sunday",
+}
+_FILTER_HELP = (
+    "Days must be spelled out (Saturday, Tuesday Thursday, weekend), time of day "
+    "must be morning, afternoon, or evening, and format must be online or in person."
+)
+
+
+def _voice_filters(
+    days: str = "", time_of_day: str = "", modality: str = "",
+) -> tuple[ScheduleFilters, list[str]]:
+    """Schedule filters from tool arguments, plus any argument that wasn't understood.
+
+    An unreadable value is reported, never dropped: searching without it would
+    answer a different question than the caller asked.
+    """
+    problems = []
+    day_words = " ".join(_DAY_ABBREVIATIONS.get(w, w) for w in re.findall(r"[a-z]+", days.lower()))
+    parsed_days = filters_from_text(day_words).days
+    if days.strip() and not parsed_days:
+        problems.append(f"days '{days}'")
+    time_band = filters_from_text(time_of_day).time_of_day
+    if time_of_day.strip() and not time_band:
+        problems.append(f"time of day '{time_of_day}'")
+    mode = filters_from_text(modality.replace("_", " ")).modality
+    if modality.strip() and not mode:
+        problems.append(f"class format '{modality}'")
+    return ScheduleFilters(days=parsed_days, time_of_day=time_band, modality=mode), problems
+
+
+def _match_building(spoken: str, codes: set[str]) -> str | None:
+    """The schedule's building code for what the caller said, if exactly one fits.
+
+    Speech arrives as "A M P", "A.M.P." or "the AMP building"; codes can carry
+    punctuation the caller won't say ("PE/W"). Compare letters and digits only.
+    """
+    wanted = re.sub(r"\b(?:the|building|bldg)\b", " ", spoken, flags=re.IGNORECASE).strip().upper()
+    if wanted in codes:
+        return wanted
+    squashed = re.sub(r"[^A-Z0-9]", "", wanted)
+    if not squashed:
+        return None
+    hits = [code for code in codes if re.sub(r"[^A-Z0-9]", "", code) == squashed]
+    return hits[0] if len(hits) == 1 else None
+
+
+async def _resolve_voice_building(
+    building: str, campus_code: str, term_code: str,
+) -> tuple[str | None, str | None]:
+    """(building code, None), or (None, a reply naming the codes in use)."""
+    codes = building_codes(await get_class_listing(campus_code, term_code))
+    code = _match_building(building, codes)
+    if code:
+        return code, None
+    campus_name = CAMPUS_NAMES.get(campus_code, campus_code)
+    return None, (
+        f"I couldn't find a building coded '{building}' in the {campus_name} "
+        f"{get_term_name(term_code)} schedule. The schedule names buildings only by "
+        f"the code in the room number. Codes in use this term: {', '.join(sorted(codes))}."
+    )
+
+
 @observe(name="voice.schedule_search")
 async def schedule_search(
-    subject: str,
+    subject: str = "",
     course_number: str = "",
     term: str | None = None,
     campus: str = DEFAULT_CAMPUS,
+    days: str = "",
+    building: str = "",
+    time_of_day: str = "",
+    modality: str = "",
 ) -> str:
-    """Search the live LACCD class schedule for a single campus."""
+    """Search the live LACCD class schedule for a single campus.
+
+    The filters apply to one meeting together, as in web chat: "Saturday in
+    AMP" is a Saturday meeting in AMP. A building or other filter can stand in
+    for the subject ("what's in AMP on Saturday?").
+    """
     term_code = resolve_term(term)
     campus_code = (campus or DEFAULT_CAMPUS).upper()
 
-    subject_code, subject_name = await find_subject_code(subject, campus_code, term_code)
-    if not subject_code:
-        return f"I couldn't find a subject matching '{subject}' in the {get_term_name(term_code)} schedule."
+    filters, problems = _voice_filters(days, time_of_day, modality)
+    if problems:
+        return f"I couldn't read the {' or the '.join(problems)}. {_FILTER_HELP}"
+    if not subject.strip() and not building.strip() and not filters:
+        return (
+            "I need a subject, or a day, time of day, building, or online or in person, "
+            "to search the schedule."
+        )
+    if building.strip():
+        code, problem = await _resolve_voice_building(building, campus_code, term_code)
+        if problem:
+            return problem
+        filters = replace(filters, building=code)
+
+    subject_code = subject_name = None
+    if subject.strip():
+        subject_code, subject_name = await find_subject_code(subject, campus_code, term_code)
+        if not subject_code:
+            return f"I couldn't find a subject matching '{subject}' in the {get_term_name(term_code)} schedule."
 
     result = await search_live_schedule(
         campus_code, term=term_code, subject=subject_code,
         course_number=course_number or None,
+        filters=filters or None,
     )
     sections = result.get("sections", [])
+    total = result.get("total_sections", len(sections))
     campus_name = result.get("campus_name", campus_code)
     term_name = result.get("term_name", get_term_name(term_code))
+    described = filters.describe()
 
     if not sections:
-        return f"No sections found for {subject_code} {course_number or ''} at {campus_name} for {term_name}."
+        # With a filter, zero is the answer ("nothing on Sunday"), not a miss.
+        what = " ".join(filter(None, [subject_code, course_number])) or "classes"
+        return f"No sections found for {what}{described} at {campus_name} for {term_name}."
 
-    header = f"Found {len(sections)} section{'s' if len(sections) != 1 else ''} for {subject_name or subject_code} at {campus_name} for {term_name}:\n\n"
-    return header + _fmt_sections_voice(sections)
+    header = (
+        f"Found {total} section{'s' if total != 1 else ''} for "
+        f"{subject_name or subject_code or 'classes'}{described} at {campus_name} for {term_name}:\n\n"
+    )
+    if result.get("truncated"):
+        header += f"The first {len(sections)} are summarized here; the LACCD class search website has the rest.\n\n"
+    return header + _fmt_sections_voice(sections, show_location=bool(filters))
 
 
 @observe(name="voice.schedule_search_all")
@@ -318,9 +428,19 @@ async def schedule_search_all(
     subject: str,
     course_number: str = "",
     term: str | None = None,
+    days: str = "",
+    time_of_day: str = "",
+    modality: str = "",
 ) -> str:
-    """Search classes across all 9 LACCD campuses."""
+    """Search classes across all 9 LACCD campuses.
+
+    No building filter: building codes are campus-local.
+    """
     term_code = resolve_term(term)
+    filters, problems = _voice_filters(days, time_of_day, modality)
+    if problems:
+        return f"I couldn't read the {' or the '.join(problems)}. {_FILTER_HELP}"
+    described = filters.describe()
 
     # Resolve subject code against a few campuses
     subject_code = None
@@ -335,14 +455,16 @@ async def schedule_search_all(
     results = await search_all_campuses(
         term=term_code, subject=subject_code,
         course_number=course_number or None,
+        filters=filters or None,
     )
     total = results.get("total_sections", 0)
     term_name = results.get("term_name", get_term_name(term_code))
 
     if total == 0:
-        return f"No sections found for {subject_code} {course_number or ''} across the district for {term_name}."
+        what = " ".join(filter(None, [subject_code, course_number]))
+        return f"No sections found for {what}{described} across the district for {term_name}."
 
-    lines = [f"Found {total} section{'s' if total != 1 else ''} across the district for {term_name}:\n"]
+    lines = [f"Found {total} section{'s' if total != 1 else ''}{described} across the district for {term_name}:\n"]
     for campus_code, campus_data in results.get("campuses", {}).items():
         cname = campus_data["campus_name"]
         n = campus_data["section_count"]
