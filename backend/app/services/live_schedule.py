@@ -281,6 +281,38 @@ class ScheduleFilters:
         return (" meeting " + " ".join(parts)) if parts else ""
 
 
+_DAY_WORDS = (
+    ("monday", "M"), ("tuesday", "T"), ("wednesday", "W"), ("thursday", "Th"),
+    ("friday", "F"), ("saturday", "S"), ("sunday", "Su"),
+)
+_TIME_OF_DAY_WORDS = (
+    ("morning", r"\bmornings?\b"),
+    ("afternoon", r"\bafternoons?\b"),
+    ("evening", r"\bevenings?\b|\bnights?\b"),
+)
+
+
+def filters_from_text(text: str) -> ScheduleFilters:
+    """Day, time-of-day and online/in-person constraints named in the text.
+
+    Shared by web chat (the student's sentence) and voice (the tool arguments).
+    Buildings need the campus's own room list, so callers add them.
+    """
+    lowered = text.lower()
+    days = {code for word, code in _DAY_WORDS if re.search(rf"\b{word}s?\b", lowered)}
+    if re.search(r"\bweekends?\b", lowered):
+        days |= {"S", "Su"}
+    # Two different times of day, or both modalities, is no constraint at all.
+    times = [name for name, pattern in _TIME_OF_DAY_WORDS if re.search(pattern, lowered)]
+    in_person = re.search(r"\bin[\s-]person\b|\bon[\s-]campus\b", lowered) is not None
+    online = re.search(r"\bonline\b", lowered) is not None
+    return ScheduleFilters(
+        days=frozenset(days),
+        time_of_day=times[0] if len(times) == 1 else None,
+        modality=("in_person" if in_person else "online") if in_person != online else None,
+    )
+
+
 def format_sections(
     listing: dict,
     course_number: str | None = None,

@@ -22,6 +22,7 @@ from app.services.live_schedule import (
     CAMPUS_NAMES,
     ScheduleFilters,
     building_codes,
+    filters_from_text,
     find_subject_code,
     format_sections,
     get_class_listing,
@@ -2836,34 +2837,13 @@ class ChatOrchestrator:
                 answer_text += enrichment
         return ChatResponse(answer=self._translate_if_needed(answer_text, lang), route="live_schedule", tool_payload=live)
 
-    _DAY_WORDS = (
-        ("monday", "M"), ("tuesday", "T"), ("wednesday", "W"), ("thursday", "Th"),
-        ("friday", "F"), ("saturday", "S"), ("sunday", "Su"),
-    )
-    _TIME_OF_DAY_WORDS = (
-        ("morning", r"\bmornings?\b"),
-        ("afternoon", r"\bafternoons?\b"),
-        ("evening", r"\bevenings?\b|\bnights?\b"),
-    )
-
     def _extract_schedule_filters(self, text: str) -> ScheduleFilters:
         """Day, time-of-day and online/in-person constraints named in the text.
 
         Buildings need the campus's own room list, so `_detect_building` adds them.
+        The word rules live in `filters_from_text`, shared with the voice agent.
         """
-        lowered = text.lower()
-        days = {code for word, code in self._DAY_WORDS if re.search(rf"\b{word}s?\b", lowered)}
-        if re.search(r"\bweekends?\b", lowered):
-            days |= {"S", "Su"}
-        # Two different times of day, or both modalities, is no constraint at all.
-        times = [name for name, pattern in self._TIME_OF_DAY_WORDS if re.search(pattern, lowered)]
-        in_person = re.search(r"\bin[\s-]person\b|\bon[\s-]campus\b", lowered) is not None
-        online = re.search(r"\bonline\b", lowered) is not None
-        return ScheduleFilters(
-            days=frozenset(days),
-            time_of_day=times[0] if len(times) == 1 else None,
-            modality=("in_person" if in_person else "online") if in_person != online else None,
-        )
+        return filters_from_text(text)
 
     # How a building is named:
     #   - any case before the word "building" ("the chem building");

@@ -196,24 +196,42 @@ class CollegeAssistant(Agent):
     async def search_schedule(
         self,
         context: RunContext,
-        subject: str,
+        subject: str = "",
         course_number: str = "",
         term: str = "",
         campus: str = "",
+        days: str = "",
+        building: str = "",
+        time_of_day: str = "",
+        modality: str = "",
     ) -> str:
         """Search the live class schedule for available sections at a specific campus.
 
+        Pass every day, time, building, or online/in-person limit the caller
+        states as its own argument, never dropped and never folded into the
+        subject. A building or day alone is enough: for "what classes are in
+        AMP on Saturday?", leave subject empty, set building="AMP" and
+        days="Saturday".
+
         Args:
-            subject: The subject area, e.g. MATH, ENGL, BIOL, CS, STAT
+            subject: The subject area, e.g. MATH, ENGL, BIOL, CS, STAT. Leave empty when the caller names no subject.
             course_number: Optional specific course number, e.g. 101, 227, C1000
             term: Optional term like 'Spring 2026' or 'Summer 2026'. Defaults to the current term.
             campus: LACCD campus code. Leave empty to use this campus. Options: LAMC, LAVC, LACC, LAPC, LAHC, LATTC, ELAC, LASC, WLAC
+            days: Optional days the class must meet, spelled out, e.g. 'Saturday', 'Tuesday Thursday', or 'weekend'.
+            building: Optional campus building code as it appears in room numbers, e.g. 'AMP' for room 'AMP 302'. Never expand a building code into words.
+            time_of_day: Optional 'morning' (starts before noon), 'afternoon' (noon to 4:59 PM), or 'evening' (5 PM or later).
+            modality: Optional 'online' or 'in person'.
         """
         return await tools.schedule_search(
             subject=subject,
             course_number=course_number,
             term=term or None,
             campus=campus or self._campus_code,
+            days=days,
+            building=building,
+            time_of_day=time_of_day,
+            modality=modality,
         )
 
     @function_tool()
@@ -223,18 +241,30 @@ class CollegeAssistant(Agent):
         subject: str,
         course_number: str = "",
         term: str = "",
+        days: str = "",
+        time_of_day: str = "",
+        modality: str = "",
     ) -> str:
         """Search for classes across all 9 LACCD colleges in the district.
+
+        For a building, use search_schedule with that college: building codes
+        differ by campus.
 
         Args:
             subject: The subject area, e.g. MATH, ENGL, PHYSICS, ECON
             course_number: Optional specific course number
             term: Optional term like 'Spring 2026'. Defaults to the current term.
+            days: Optional days the class must meet, spelled out, e.g. 'Saturday' or 'Tuesday Thursday'.
+            time_of_day: Optional 'morning', 'afternoon', or 'evening'.
+            modality: Optional 'online' or 'in person'.
         """
         return await tools.schedule_search_all(
             subject=subject,
             course_number=course_number,
             term=term or None,
+            days=days,
+            time_of_day=time_of_day,
+            modality=modality,
         )
 
     @function_tool()

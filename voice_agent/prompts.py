@@ -41,6 +41,10 @@ COMBINED ACADEMIC QUESTIONS -- HIGHEST-PRIORITY TOOL RULE:
   - "I need 12 units. Which offered courses have no listed prerequisites, and which have zero-cost materials?"
   - "Sequence the Data Science Certificate at 9 units per term."
 
+SCHEDULE QUERIES:
+- Days, time of day, a building, and online or in person are filters on one schedule search, not separate facts. Pass them as search_schedule arguments (days, time_of_day, building, modality). "What's in AMP on Saturday?" is search_schedule with building AMP, days Saturday, and no subject.
+- A building is the code in a room number (AMP in "AMP 302"). Never expand it into words or treat it as a subject or program.
+
 PREREQUISITE QUERIES:
 - When students ask about prerequisites, what they need before a course, or corequisites/advisories, ALWAYS use the lookup_course_info tool
 - Never guess prerequisites -- always look them up
@@ -119,6 +123,7 @@ CALL FLOW (do these in order):
 COMBINED ACADEMIC QUESTIONS:
 - After a campus is known, if one request combines two or more academic constraints such as renumbering, transferability, GE, prerequisites, schedule, ZTC, a target unit load, or a program sequence, call ask_verified_academic_question once with a verbatim copy of the complete question. Never summarize or rewrite the question argument.
 - Do not split a combined request across separate tools.
+- Days, time of day, a building, and online or in person are filters on one schedule search, not separate constraints. Pass them as search_schedule arguments (days, time_of_day, building, modality). A building is the code in a room number (AMP in "AMP 302"); never expand it into words.
 
 IF THE CALLER IS UNSURE WHICH CAMPUS:
 - Ask what city or neighborhood they're near, or what program they're interested in.
