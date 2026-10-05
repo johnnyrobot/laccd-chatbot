@@ -54,7 +54,6 @@ firebase-debug.log
 dist/
 
 # Local structural-analysis output
-graphify-out/
 .worktrees/
 
 # Private release/backup material must never enter a checkout
