@@ -302,7 +302,7 @@
     programs.forEach(function (title, i) {
       var y = rowY(i, programs.length);
       arrow(line(parent, 970, heroY, 1048, y, "programs", 36));
-      pill(parent, 1165, y, 230, 96, wrap(title, 22).map(function (text) {
+      pill(parent, 1165, y, 230, 96, wrap(title, 20).map(function (text) {
         return { text: text, size: 20, weight: 500 };
       }), { hop: "programs" });
     });

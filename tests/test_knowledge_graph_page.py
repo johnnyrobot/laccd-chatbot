@@ -249,6 +249,39 @@ def test_full_course_scan_runs_only_for_a_campus_with_no_renumberings(monkeypatc
     assert view._ALL_CANDIDATES in queries
 
 
+@pytest.mark.parametrize(
+    ("code", "readable"),
+    (
+        ("MATH 262", True),
+        ("STAT C1000", True),
+        ("PHYSICS 102", True),
+        ("ADM JUS 165", True),
+        ("MUSIC 216-2", False),
+    ),
+)
+def test_example_course_must_be_one_the_chatbot_reads_whole(code: str, readable: bool) -> None:
+    assert view.chatbot_reads_code(code) is readable
+
+
+def test_unreadable_course_is_never_chosen_as_the_example(monkeypatch) -> None:
+    detail_codes: list[str] = []
+
+    async def query(cypher: str, params: dict[str, Any]):
+        if cypher is view._WALK_DETAIL:
+            detail_codes.append(params["code"])
+            return []
+        return [
+            _candidate("MUSIC 216-2", before=5, programs=9),
+            _candidate("MUSIC 101", before=0),
+        ]
+
+    monkeypatch.setattr(view.neo4j_service, "run_query", query)
+
+    asyncio.run(view._load_walk("LAHC"))
+
+    assert detail_codes == ["MUSIC 101"]
+
+
 def test_a_renumbered_course_is_preferred_as_the_example() -> None:
     plain = _candidate("AAA 100", renumbered=0)
     renumbered = _candidate("ZZZ 100", renumbered=1)

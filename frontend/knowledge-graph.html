@@ -67,7 +67,7 @@
             {% if walk.ge or walk.programs %}
             <li class="kg-step" data-key="counts">
               <h2>One course counts in several places</h2>
-              <p>{% if walk.ge_total %}{{ walk.ge_total }} GE {{ "area" if walk.ge_total == 1 else "areas" }}{% endif %}{% if walk.ge_total and walk.programs_total %}, {% endif %}{% if walk.programs_total %}{{ walk.programs_total }} {{ "program" if walk.programs_total == 1 else "programs" }}{% endif %}{% if walk.careers_total %}, and through those programs, {{ walk.careers_total }} {{ "career" if walk.careers_total == 1 else "careers" }}{% endif %}. A search would need a separate page for each.{% if walk.ge_total %} <code>FULFILLS_GE</code>{% endif %}{% if walk.programs_total %} <code>REQUIRES_COURSE</code>{% endif %}{% if walk.careers_total %} <code>LEADS_TO_CAREER</code>{% endif %}</p>
+              <p>{% if walk.ge_total %}{{ walk.ge_total }} GE {{ "area" if walk.ge_total == 1 else "areas" }}{% endif %}{% if walk.ge_total and walk.programs_total %}, {% endif %}{% if walk.programs_total %}{{ walk.programs_total }} {{ "program" if walk.programs_total == 1 else "programs" }}{% endif %}{% if walk.careers_total %}, and through {{ "it" if walk.programs_total == 1 else "those programs" }}, {{ walk.careers_total }} {{ "career" if walk.careers_total == 1 else "careers" }}{% endif %}. A search would need a separate page for each.{% if walk.ge_total %} <code>FULFILLS_GE</code>{% endif %}{% if walk.programs_total %} <code>REQUIRES_COURSE</code>{% endif %}{% if walk.careers_total %} <code>LEADS_TO_CAREER</code>{% endif %}</p>
             </li>
             {% endif %}
             <li class="kg-step" data-key="answer">

@@ -16,6 +16,7 @@ import time
 from datetime import datetime, timezone
 from typing import Any
 
+from app.services.chat import _find_course_code
 from app.services.neo4j_service import neo4j_service
 
 logger = logging.getLogger(__name__)
@@ -163,6 +164,19 @@ def candidate_rank(row: dict[str, Any]) -> tuple:
     )
 
 
+def chatbot_reads_code(code: str) -> bool:
+    """Whether the chatbot's own parser sees this whole code.
+
+    The tour puts a question about the example course on screen. The parser
+    reads MUSIC 216-2 as MUSIC 216, a different course, so a code like that
+    would get an answer that doesn't match the slide.
+    """
+    match = _find_course_code(code)
+    if not match:
+        return False
+    return f"{match.group(1).strip()} {match.group(2)}" == code
+
+
 def _code_order(code: str) -> tuple[int, str]:
     """Shortest first, so MATH 261 leads MATH 261S."""
     return (len(code), code)
@@ -223,10 +237,12 @@ def build_walk(row: dict[str, Any]) -> dict[str, Any]:
 
 
 async def _load_walk(campus: str) -> dict[str, Any] | None:
-    params = {"campus": campus}
-    candidates = await neo4j_service.run_query(_RENUMBERED_CANDIDATES, params)
-    if not candidates:
-        candidates = await neo4j_service.run_query(_ALL_CANDIDATES, params)
+    candidates: list[dict[str, Any]] = []
+    for query in (_RENUMBERED_CANDIDATES, _ALL_CANDIDATES):
+        rows = await neo4j_service.run_query(query, {"campus": campus})
+        candidates = [row for row in rows if chatbot_reads_code(row["code"])]
+        if candidates:
+            break
     if not candidates:
         return None
     chosen = min(candidates, key=candidate_rank)
