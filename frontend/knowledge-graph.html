@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+    <meta name="description" content="How the {{ campus.name }} assistant connects courses, programs, careers, and transfer requirements.">
+    <title>Knowledge Graph — {{ campus.name }} Chatbot</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23{{ campus.accent_color[1:] }}'/%3E%3C/svg%3E">
+    <link rel="preload" href="/fonts/ibm-plex-sans-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/styles.css?v={{ cache_v }}">
+    <link rel="stylesheet" href="/knowledge-graph.css?v={{ cache_v }}">
+    <style>
+      :root {
+        --accent: {{ campus.accent_color }};
+        --accent-hover: {{ campus.accent_hover }};
+        --accent-rgb: {{ campus.accent_rgb }};
+      }
+    </style>
+  </head>
+  <body class="kg-page">
+    <a class="skip-link" href="#kg-numbers">Skip to the campus numbers</a>
+    <main>
+      <section class="kg-stage" id="kg-stage" aria-label="Guided tour of the {{ campus.name }} knowledge graph">
+        <header class="kg-bar">
+          <h1>{{ campus.name }} <span>knowledge graph</span></h1>
+          <a href="/" class="kg-bar-link">Back to {{ campus.code }} chat</a>
+        </header>
+
+        <div class="kg-diagram" id="kg-diagram"></div>
+
+        <div class="kg-foot">
+          <ol class="kg-steps" id="kg-steps" aria-live="polite">
+            <li class="kg-step" data-key="district">
+              <h2>One map for nine colleges</h2>
+              {% if snapshot %}
+              <p>{{ "{:,}".format(snapshot.district.courses) }} course records and {{ "{:,}".format(snapshot.district.programs) }} programs, joined by {{ "{:,}".format(snapshot.district.connections) }} connections.<span class="kg-with-diagram"> Each dot is about 50 course records.</span></p>
+              {% else %}
+              <p>Each college keeps its own courses and programs. All nine share the same GE areas, careers, and open textbooks.</p>
+              {% endif %}
+            </li>
+            <li class="kg-step" data-key="campus">
+              <h2>{{ campus.short_name }}’s part of the map</h2>
+              <p>Courses sit in the middle. Programs, GE areas, subjects, and instructors connect to them directly, and careers connect through programs.</p>
+            </li>
+            {% if walk %}
+            <li class="kg-step" data-key="course">
+              <h2>One course: {{ walk.title }}</h2>
+              <p>{{ walk.code }} has {{ walk.links }} connections here. Each one is a stored fact, not a sentence on a web page that has to be found and interpreted.</p>
+            </li>
+            {% if walk.old %}
+            <li class="kg-step" data-key="renumber">
+              <h2>An old course number still leads here</h2>
+              <p>{{ walk.old }} became {{ walk.code }}. Transcripts and older catalogs still use the old number, so the map keeps the link between them. <code>RENUMBERED_TO</code></p>
+            </li>
+            {% endif %}
+            {% if walk.chain or walk.unlocks %}
+            <li class="kg-step" data-key="path">
+              <h2>Prerequisites form a path</h2>
+              {% if walk.chain %}
+              <p>{{ walk.chain|map(attribute="code")|join(" to ") }} to {{ walk.code }}. Each step is its own connection, so the assistant can follow the whole chain instead of stopping at one page. <code>PREREQUISITE_OF</code></p>
+              {% else %}
+              <p>{{ walk.code }} opens the way to {{ walk.unlocks_total }} later {{ "course" if walk.unlocks_total == 1 else "courses" }}. Each step is its own connection, so the assistant can follow the path forward. <code>PREREQUISITE_OF</code></p>
+              {% endif %}
+            </li>
+            {% endif %}
+            {% if walk.ge or walk.programs %}
+            <li class="kg-step" data-key="counts">
+              <h2>One course counts in several places</h2>
+              <p>{% if walk.ge_total %}{{ walk.ge_total }} GE {{ "area" if walk.ge_total == 1 else "areas" }}{% endif %}{% if walk.ge_total and walk.programs_total %}, {% endif %}{% if walk.programs_total %}{{ walk.programs_total }} {{ "program" if walk.programs_total == 1 else "programs" }}{% endif %}{% if walk.careers_total %}, and through {{ "it" if walk.programs_total == 1 else "those programs" }}, {{ walk.careers_total }} {{ "career" if walk.careers_total == 1 else "careers" }}{% endif %}. A search would need a separate page for each.{% if walk.ge_total %} <code>FULFILLS_GE</code>{% endif %}{% if walk.programs_total %} <code>REQUIRES_COURSE</code>{% endif %}{% if walk.careers_total %} <code>LEADS_TO_CAREER</code>{% endif %}</p>
+            </li>
+            {% endif %}
+            <li class="kg-step" data-key="answer">
+              {% if walk.chain %}
+              <h2>“What are the prerequisites for {{ walk.code }}, and is it transferable?”</h2>
+              {% else %}
+              <h2>“Is {{ walk.code }} transferable, and which general education areas does it satisfy?”</h2>
+              {% endif %}
+              <p>The assistant reads {% if walk.chain and walk.ge %}prerequisites, transfer status, and GE areas{% elif walk.chain %}prerequisites and transfer status{% elif walk.ge %}transfer status and GE areas{% else %}transfer status{% endif %} straight from the map. AI only turns them into a sentence, so it isn’t guessing at them from memory.</p>
+            </li>
+            {% endif %}
+          </ol>
+
+          <div class="kg-controls" id="kg-controls" hidden>
+            <div class="kg-dots" id="kg-dots"></div>
+            <div class="kg-buttons">
+              <button type="button" class="kg-btn" id="kg-full" aria-pressed="false">Full screen</button>
+              <button type="button" class="kg-btn" id="kg-prev">Back</button>
+              <button type="button" class="kg-btn kg-btn-next" id="kg-next">Next</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="kg-detail" id="kg-numbers" tabindex="-1">
+        {% if counts %}
+        <section class="kg-section">
+          <h2>Everything in {{ campus.short_name }}’s map</h2>
+          <p class="kg-lead">Read each row as a sentence. The last column is the name the system uses for that connection.</p>
+          <div class="kg-table-wrap">
+            <table class="kg-table">
+              <caption class="kg-visually-hidden">Connection types in the {{ campus.name }} knowledge graph, with counts</caption>
+              <thead>
+                <tr>
+                  <th scope="col">From</th>
+                  <th scope="col">Connection</th>
+                  <th scope="col">To</th>
+                  <th scope="col" class="kg-num">How many</th>
+                  <th scope="col" class="kg-narrow-hide">System name</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% set rows = [
+                  ("A subject", "contains", "a course", "HAS_COURSE"),
+                  ("A course", "counts toward", "a GE area", "FULFILLS_GE"),
+                  ("A program", "includes", "a course", "REQUIRES_COURSE"),
+                  ("A program", "leads to", "a career", "LEADS_TO_CAREER"),
+                  ("An instructor", "teaches", "a course", "TEACHES"),
+                  ("A course", "is required before", "another course", "PREREQUISITE_OF"),
+                  ("A course", "is recommended before", "another course", "ADVISORY_FOR"),
+                  ("A course", "is taken alongside", "another course", "COREQUISITE_OF"),
+                  ("A course", "was renumbered as", "another course", "RENUMBERED_TO"),
+                  ("A program", "belongs to", "a program group", "IN_GROUP"),
+                  ("A subject", "has", "a free textbook", "HAS_OPENSTAX_BOOK"),
+                  ("A course or program", "is offered at", "the college", "AT_CAMPUS"),
+                  ("An instructor", "teaches at", "the college", "TEACHES_AT"),
+                  ("The college", "offers", "a subject", "OFFERS_SUBJECT"),
+                ] %}
+                {% for from_label, verb, to_label, kind in rows %}
+                <tr>
+                  <td>{{ from_label }}</td>
+                  <th scope="row">{{ verb }}</th>
+                  <td>{{ to_label }}</td>
+                  <td class="kg-num">{{ "{:,}".format(counts.edges.get(kind, 0)) }}</td>
+                  <td class="kg-narrow-hide"><code>{{ kind }}</code></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th scope="row" colspan="3">Total connections</th>
+                  <td class="kg-num">{{ "{:,}".format(counts.connections) }}</td>
+                  <td class="kg-narrow-hide"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </section>
+
+        <section class="kg-section">
+          <h2>Nine colleges side by side</h2>
+          <p class="kg-lead">Course records include retired numbers, which is what lets an old code find its replacement. Each college name opens that college’s page.</p>
+          {% set max_courses = snapshot.campuses.values()|map(attribute="Course")|max %}
+          <div class="kg-table-wrap">
+            <table class="kg-table kg-compare">
+              <caption class="kg-visually-hidden">Course records, programs, and connections by college</caption>
+              <thead>
+                <tr>
+                  <th scope="col">College</th>
+                  <th scope="col" class="kg-bar-col">Course records</th>
+                  <th scope="col" class="kg-num kg-narrow-hide">Programs</th>
+                  <th scope="col" class="kg-num">Connections</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for linked in ranked_campuses %}
+                {% set row = snapshot.campuses[linked.code] %}
+                <tr{% if linked.code == campus.code %} class="is-current"{% endif %}>
+                  <th scope="row"><a href="https://{{ linked.code|lower }}.chat/knowledge-graph">{{ linked.short_name }}</a></th>
+                  <td class="kg-bar-col">
+                    <span class="kg-bar-cell">
+                      <span class="kg-bar-track"><span class="kg-bar-fill" style="width: {{ (row.Course / max_courses * 100)|round(1) }}%"></span></span>
+                      <span class="kg-bar-value">{{ "{:,}".format(row.Course) }}</span>
+                    </span>
+                  </td>
+                  <td class="kg-num kg-narrow-hide">{{ "{:,}".format(row.Program) }}</td>
+                  <td class="kg-num">{{ "{:,}".format(row.connections) }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </section>
+        {% endif %}
+
+        <section class="kg-section">
+          <h2>What stays out of the map</h2>
+          <p class="kg-lead">The map holds facts that change slowly. Anything that changes daily is checked at the source when a student asks.</p>
+          <dl class="kg-sources">
+            <div>
+              <dt>Class schedule</dt>
+              <dd>Open sections, times, and rooms come from the live LACCD schedule.</dd>
+            </div>
+            <div>
+              <dt>Transfer agreements</dt>
+              <dd>Questions about a specific university go to ASSIST.org.</dd>
+            </div>
+            <div>
+              <dt>Campus information</dt>
+              <dd>Office hours and locations come from a search of the college website.</dd>
+            </div>
+          </dl>
+        </section>
+
+        <p class="kg-closing">
+          {% if snapshot %}
+          Numbers read from the live data on <time datetime="{{ snapshot.read_at }}">{{ snapshot.read_at[:10] }}</time>.
+          {% else %}
+          Live numbers are unavailable right now. The structure shown above is still accurate.
+          {% endif %}
+          <a href="/how-it-works">How the assistant works</a>
+        </p>
+      </div>
+    </main>
+
+    {% if snapshot %}
+    <script type="application/json" id="kg-data">{{ {
+      "campus": campus.code,
+      "counts": counts,
+      "walk": walk,
+      "colleges": campuses|map(attribute="code")|list,
+      "courses": snapshot.campuses,
+    }|tojson }}</script>
+    {% else %}
+    <script type="application/json" id="kg-data">{{ {
+      "campus": campus.code,
+      "counts": none,
+      "walk": none,
+      "colleges": campuses|map(attribute="code")|list,
+      "courses": none,
+    }|tojson }}</script>
+    {% endif %}
+    <script src="/knowledge-graph.js?v={{ cache_v }}" defer></script>
+  </body>
+</html>

@@ -1,0 +1,573 @@
+/* The tour fills the first screen in the campus color; the reference tables
+   sit below it on the site's normal light ground. */
+
+.kg-page {
+  --stage: var(--accent-hover);
+  --on-stage: #ffffff;
+  --on-stage-soft: rgba(255, 255, 255, 0.86);
+  height: auto;
+  min-height: 100dvh;
+  background: var(--bg);
+  font-variant-numeric: tabular-nums;
+}
+
+:root:has(.kg-page) {
+  scrollbar-color: #c7ccd6 var(--accent-hover);
+}
+
+:root:has(.kg-page):fullscreen {
+  scrollbar-width: none;
+}
+
+.kg-page ::selection {
+  background: rgba(var(--accent-rgb), 0.22);
+}
+
+.kg-page .skip-link {
+  position: absolute;
+  top: -48px;
+  left: 8px;
+  z-index: 100;
+  padding: 0.5rem 0.85rem;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.kg-page .skip-link:focus {
+  top: 8px;
+}
+
+/* ── Stage ─────────────────────────────────────── */
+
+.kg-stage {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100dvh;
+  min-height: 560px;
+  padding: clamp(1rem, 2.2vh, 1.75rem) clamp(1.25rem, 3.2vw, 3.5rem);
+  background: var(--stage);
+  color: var(--on-stage);
+}
+
+.kg-stage ::selection {
+  background: #ffffff;
+  color: var(--stage);
+}
+
+.kg-stage :focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.kg-bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.kg-bar h1 {
+  margin: 0;
+  font-size: clamp(1.05rem, 1.5vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.kg-bar h1 span {
+  font-weight: 400;
+  color: var(--on-stage-soft);
+}
+
+.kg-bar-link {
+  flex: none;
+  color: var(--on-stage-soft);
+  font-size: clamp(0.92rem, 1.1vw, 1.1rem);
+  text-underline-offset: 0.2em;
+}
+
+.kg-bar-link:hover {
+  color: #ffffff;
+}
+
+.kg-diagram {
+  position: relative;
+  min-height: 0;
+  margin-block: 0.5rem;
+}
+
+.kg-diagram svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.kg-foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: clamp(1.5rem, 4vw, 5rem);
+}
+
+.kg-steps {
+  min-height: clamp(7.5rem, 21vh, 13.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kg-step h2 {
+  max-width: 28em;
+  margin: 0 0 0.4em;
+  font-size: clamp(1.7rem, 3.1vw, 3.25rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.kg-step p {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--on-stage-soft);
+  font-size: clamp(1.05rem, 1.55vw, 1.6rem);
+  line-height: 1.4;
+}
+
+.kg-step code {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.72em;
+  white-space: nowrap;
+  opacity: 0.92;
+}
+
+.kg-step code::before {
+  content: " ";
+}
+
+.kg-controls {
+  display: grid;
+  justify-items: end;
+  gap: 0.8rem;
+}
+
+.kg-controls[hidden] {
+  display: none;
+}
+
+.kg-dots {
+  display: flex;
+  gap: 0.15rem;
+}
+
+.kg-dot {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.kg-dot::before {
+  content: "";
+  display: block;
+  width: 12px;
+  height: 12px;
+  margin: auto;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.kg-dot[aria-current="step"]::before {
+  background: #ffffff;
+}
+
+.kg-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.kg-btn {
+  min-height: 46px;
+  padding: 0.5rem 1.05rem;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.kg-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.kg-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.kg-btn-next {
+  min-width: 7.5rem;
+  border-color: #ffffff;
+  background: #ffffff;
+  color: var(--stage);
+  font-weight: 600;
+}
+
+.kg-btn-next:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.kg-enhanced .kg-step:not(.is-active) {
+  display: none;
+}
+
+/* ── Diagram ───────────────────────────────────── */
+
+.kg-svg text {
+  fill: #ffffff;
+  stroke: var(--stage);
+  stroke-width: 9px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+  font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+}
+
+.kg-scene {
+  transition: none;
+}
+
+.kg-line {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 2.5;
+}
+
+.kg-college a {
+  cursor: pointer;
+}
+
+.kg-college a:hover text {
+  text-decoration: underline;
+}
+
+.kg-pill rect {
+  fill: var(--stage);
+  stroke: #ffffff;
+  stroke-width: 2.5;
+}
+
+.kg-pill.is-solid rect {
+  fill: #ffffff;
+}
+
+.kg-pill text {
+  stroke: none;
+}
+
+.kg-pill.is-solid text {
+  fill: var(--stage);
+}
+
+.kg-pill.is-old rect {
+  stroke-dasharray: 9 7;
+}
+
+/* Tour highlighting: one group of facts at a time. */
+.kg-hop {
+  opacity: 0.2;
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.kg-scene.is-overview .kg-hop {
+  opacity: 0.62;
+}
+
+.kg-scene .kg-hop.is-on {
+  opacity: 1;
+}
+
+.kg-line.kg-hop.is-on {
+  stroke-width: 4;
+  stroke-dasharray: 1;
+  animation: kg-draw 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes kg-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* ── Detail below the stage ────────────────────── */
+
+.kg-detail {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vh, 4.5rem) clamp(1.25rem, 3vw, 2.5rem) 3.5rem;
+  outline: none;
+}
+
+.kg-section {
+  margin-bottom: clamp(3rem, 8vh, 5rem);
+}
+
+.kg-section h2 {
+  margin: 0 0 0.4em;
+  color: var(--text);
+  font-size: clamp(1.6rem, 2.6vw, 2.25rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.kg-lead {
+  max-width: 68ch;
+  margin: 0 0 1.5rem;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  line-height: 1.55;
+}
+
+.kg-table-wrap {
+  overflow-x: auto;
+}
+
+.kg-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.04rem;
+}
+
+.kg-table th,
+.kg-table td {
+  padding: 0.72rem 1rem 0.72rem 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.kg-table tfoot th,
+.kg-table tfoot td {
+  border-bottom: 0;
+  font-weight: 700;
+}
+
+.kg-table thead th {
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.kg-table tbody th {
+  font-weight: 600;
+}
+
+.kg-table code {
+  color: var(--text-muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.86em;
+}
+
+.kg-table .kg-num {
+  padding-right: 2rem;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.kg-table a {
+  color: inherit;
+  text-underline-offset: 0.2em;
+}
+
+.kg-table a:hover {
+  color: var(--accent);
+}
+
+.kg-bar-col {
+  width: 46%;
+}
+
+.kg-bar-cell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 3.5rem;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.kg-bar-track {
+  display: block;
+}
+
+.kg-bar-fill {
+  display: block;
+  height: 14px;
+  border-radius: 0 4px 4px 0;
+  background: #b9bdc7;
+}
+
+.kg-bar-value {
+  text-align: right;
+}
+
+.kg-compare .is-current .kg-bar-fill {
+  background: var(--accent);
+}
+
+.kg-compare .is-current th,
+.kg-compare .is-current td {
+  background: rgba(var(--accent-rgb), 0.07);
+}
+
+.kg-compare .is-current th {
+  padding-left: 0.6rem;
+}
+
+.kg-sources {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem 2.5rem;
+  margin: 0;
+}
+
+.kg-sources dt {
+  margin-bottom: 0.3rem;
+  color: var(--text);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.kg-sources dd {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.kg-closing {
+  margin: 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.kg-closing a {
+  margin-left: 0.5rem;
+  color: var(--accent);
+  text-underline-offset: 0.2em;
+}
+
+.kg-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Small screens read the tour as a list ─────── */
+
+@media (max-width: 820px) {
+  .kg-stage {
+    height: auto;
+    min-height: 0;
+    grid-template-rows: auto auto;
+    gap: 1.5rem;
+  }
+
+  .kg-diagram,
+  .kg-controls {
+    display: none;
+  }
+
+  .kg-foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .kg-enhanced .kg-step:not(.is-active) {
+    display: block;
+  }
+
+  .kg-with-diagram {
+    display: none;
+  }
+
+  .kg-step + .kg-step {
+    margin-top: 1.6rem;
+  }
+
+  .kg-step h2 {
+    font-size: 1.5rem;
+  }
+
+  .kg-step p {
+    font-size: 1.05rem;
+  }
+
+  .kg-table .kg-num {
+    padding-right: 1rem;
+  }
+
+  .kg-sources {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .kg-narrow-hide {
+    display: none;
+  }
+
+  .kg-table {
+    font-size: 0.95rem;
+  }
+
+  .kg-table th,
+  .kg-table td {
+    padding-right: 0.5rem;
+  }
+
+  .kg-table .kg-num {
+    padding-right: 0;
+  }
+
+  .kg-bar-col {
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kg-hop,
+  .kg-dot::before,
+  .kg-btn {
+    transition: none;
+  }
+
+  .kg-line.kg-hop.is-on {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .kg-stage {
+    border: 1px solid CanvasText;
+  }
+
+  .kg-bar-fill {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
+}
