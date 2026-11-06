@@ -45,6 +45,7 @@ from app.services.corpus import CorpusNormalizer, is_lamission_url, load_manifes
 from app.services.crawl4ai_service import Crawl4AIService
 from app.services.data_health import build_data_health_report
 from app.services.gemini_file_search import GeminiFileSearchService
+from app.services.knowledge_graph_view import get_snapshot as get_knowledge_graph_snapshot
 from app.services.neo4j_service import neo4j_service
 from shared.campus_config import CAMPUSES, get_campus_from_host, get_sample_questions
 
@@ -66,7 +67,7 @@ _CLIENT_LOG_HMAC_KEY = (
     os.getenv("CLIENT_LOG_HMAC_KEY", "").encode("utf-8") or secrets.token_bytes(32)
 )
 
-CACHE_VERSION = "81"
+CACHE_VERSION = "82"
 CRAWLER_DIRECTIVES = "noindex, nofollow, noarchive, nosnippet"
 PUBLIC_CAMPUS_ORDER = (
     "LAMC",
@@ -269,6 +270,27 @@ async def serve_how_it_works(request: Request):
         "request": request,
         "campus": campus,
         "campuses": [CAMPUSES[code] for code in PUBLIC_CAMPUS_ORDER],
+        "cache_v": CACHE_VERSION,
+    })
+
+
+@app.get("/knowledge-graph", response_class=HTMLResponse)
+async def serve_knowledge_graph(request: Request):
+    campus = get_campus_from_host(request.headers.get("host", ""))
+    snapshot = await get_knowledge_graph_snapshot()
+    campuses = [CAMPUSES[code] for code in PUBLIC_CAMPUS_ORDER]
+    ranked_campuses = sorted(
+        campuses,
+        key=lambda c: -snapshot["campuses"][c.code]["Course"] if snapshot else 0,
+    )
+    return templates.TemplateResponse("knowledge-graph.html", {
+        "request": request,
+        "campus": campus,
+        "campuses": campuses,
+        "ranked_campuses": ranked_campuses,
+        "snapshot": snapshot,
+        "counts": snapshot["campuses"][campus.code] if snapshot else None,
+        "walk": snapshot["walks"][campus.code] if snapshot else None,
         "cache_v": CACHE_VERSION,
     })
 

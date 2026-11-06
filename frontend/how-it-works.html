@@ -69,6 +69,14 @@
       }
       .hiw-back:hover { text-decoration: underline; }
 
+      .hiw-records-link {
+        display: inline-block;
+        margin-top: 0.6rem;
+        color: var(--accent);
+        font-weight: 600;
+        text-underline-offset: 0.2em;
+      }
+
       .hiw-hero {
         background: var(--bg);
         border: 1px solid var(--border);
@@ -619,6 +627,7 @@
             <div>
               <h3>Verified academic data <span class="static-tag">Maintained</span></h3>
               <p>More than 20,000 course records across all nine colleges, including prerequisites, corequisites, advisories, GE placement, UC and CSU transferability, course renumberings, programs, and instructors. The records are maintained from official district and statewide sources.</p>
+              <a href="/knowledge-graph" class="hiw-records-link">See how {{ campus.code }}’s records connect in the knowledge graph <span aria-hidden="true">→</span></a>
             </div>
           </li>
           <li>

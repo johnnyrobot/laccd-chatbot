@@ -17,6 +17,11 @@ FORBIDDEN_PUBLIC_TECHNOLOGY_TERMS = (
     "neo4j",
     "cypher",
 )
+# /how-it-works may name the knowledge graph only in the one link to that page.
+KNOWLEDGE_GRAPH_LINK = re.compile(
+    r'<a href="/knowledge-graph"[^>]*>.*?</a>',
+    flags=re.DOTALL,
+)
 EXPECTED_CRAWLER_DIRECTIVES = {
     "noindex",
     "nofollow",
@@ -49,7 +54,11 @@ def test_public_campus_pages_do_not_disclose_internal_data_technology(
     response = TestClient(app).get(path, headers={"host": f"{campus_code.lower()}.chat"})
 
     assert response.status_code == 200
-    page = response.text.lower()
+    page = response.text
+    if path == "/how-it-works":
+        page, links = KNOWLEDGE_GRAPH_LINK.subn("", page)
+        assert links == 1
+    page = page.lower()
     for term in FORBIDDEN_PUBLIC_TECHNOLOGY_TERMS:
         assert term not in page
     assert re.search(r"\bgraph\b", page) is None
